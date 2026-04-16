@@ -1,8 +1,8 @@
 */obj
 */bin
-*/.vs
-*/.vscode
-*/.idea
+.vs
+.vscode
+.idea
 */.DS_Store
 */.user
 */.suo
