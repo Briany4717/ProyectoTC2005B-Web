@@ -6,8 +6,8 @@
 
 ### Integrantes
 
-- Brian Roberto Gómez Martínez
-- Fabrizzio Emanuel Mariano Arango
+- Brian Roberto Gómez Martínez A00841404
+- Fabrizzio Emanuel Mariano Arango A00842796
 - Ricardo Gomez Novelo A00843383
 - Eduardo Didier Aguilar Alvarez
 - Erik Sebastian Ayala Torres A01277400
