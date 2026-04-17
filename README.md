@@ -8,6 +8,6 @@
 
 - Brian Roberto Gómez Martínez
 - Fabrizzio Emanuel Mariano Arango
-- Ricardo Gomez Novelo
+- Ricardo Gomez Novelo A00843383
 - Eduardo Didier Aguilar Alvarez
 - Erik Sebastian Ayala Torres A01277400
