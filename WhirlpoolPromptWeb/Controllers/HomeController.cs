@@ -15,7 +15,24 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        return View();
+        User user = new User();
+        user.Name = "Mario";
+        user.LastName = "Bros";
+        user.ProfilePhoto = ProfilePhoto.mario;
+        user.Coins = 247;
+        ViewData["Coins"] = user.Coins;
+
+        switch (user.ProfilePhoto)
+        {
+            case ProfilePhoto.mario:
+                ViewData["ProfilePhoto"] = "mario-bros.png";
+                break;
+            default:
+                ViewData["ProfilePhoto"] = "mario-bros.png";
+                break;
+
+        }
+        return View(user);
     }
 
     public IActionResult Privacy()
