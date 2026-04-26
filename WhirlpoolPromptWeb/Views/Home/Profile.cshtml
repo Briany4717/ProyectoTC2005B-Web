@@ -1,0 +1,131 @@
+@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<main class="col-8 mx-auto">
+    <h1>Mi Perfil</h1>
+
+    <div class="card rounded-3 p-5 shadow-sm d-flex flex-column flex-md-row align-items-center gap-4 mb-4">
+        <div class="col-12 col-md-3 mx-md-0 mx-auto">
+            <img class="profile-photo rounded-circle img-fluid w-100" src="~/images/@ViewData["ProfilePhoto"]"
+                 alt="Foto de perfil" />
+        </div>
+        <div class="col-12 col-md-5">
+            <h1 class="m-0">@Model.User.Name @Model.User.LastName</h1>
+            <h3>Mis monedas</h3>
+            <div class="coins-cont">
+                <img src="~/images/moneda-nueva.png" alt="Moneda" />
+                <span>@Model.User.Coins</span>
+            </div>
+            <h3 class="d-flex gap-2 mt-3">
+                <span class="material-symbols-rounded">
+                    leaderboard
+                </span>
+                Clasificación
+            </h3>
+            <div class="d-flex gap-2">
+                <div class="secondary-cont">
+                    <span>Nacional</span> <span>#@Model.User.NationalRanking</span>
+                </div>
+                <div class="secondary-cont">
+                    <span>Local</span> <span>#@Model.User.LocalRanking</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <a href="/Home/Profile?tab=Created&searchTerm=@Model.SearchTerm&sortOrder=@Model.SortOrder"
+           class="@(Model.ActiveTab == "Created" ? "active" : "")">Mis Publicaciones</a>
+        <a href="/Home/Profile?tab=Saved&searchTerm=@Model.SearchTerm&sortOrder=@Model.SortOrder"
+           class="@(Model.ActiveTab == "Saved" ? "active" : "")">Guardados</a>
+    </div>
+
+    <form method="get" action="/Home/Profile" class="d-flex flex-wrap gap-2 my-3">
+        <div class="search-bar">
+            <span class="material-symbols-rounded">search</span>
+            <!-- Para no perder la pestaña actual al buscar/filtrar NO BORRAR -->
+            <input type="hidden" name="tab" value="@Model.ActiveTab" />
+    
+            <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Buscar prompts..." />
+        
+            <select name="sortOrder" class="form-select w-auto border-top-0 border-bottom-0 rounded-0">
+                <option value="date" selected="@(Model.SortOrder == "date" ? "selected" : null)">Más recientes</option>
+                <option value="popularity" selected="@(Model.SortOrder == "popularity" ? "selected" : null)">Más
+                    populares
+                </option>
+                <option value="alpha" selected="@(Model.SortOrder == "alpha" ? "selected" : null)">Alfabético (A-Z)
+                </option>
+            </select>
+
+            <button type="submit" class="btn-search">Buscar</button>
+        </div>
+    </form>
+
+    <div class="prompts-cont">
+        @foreach (var prompt in Model.Prompts)
+        {
+            <div class="card mb-3 p-4 col-5">
+                <div class="text-muted mb-0 d-flex justify-content-between align-items-center">
+                    @if (prompt.Tag != null)
+                    {
+                        <span class="d-flex align-items-center gap-1">
+                            <span class="material-symbols-rounded" style="font-size: 16px;">@prompt.Tag.Icon</span>
+                            @prompt.Tag.Label
+                        </span>
+                    }
+                    else
+                    {
+                        <span></span>
+                    }
+                    @prompt.date.ToString("d 'de' MMMM",
+                                                                                                                                                                                    System.Globalization.CultureInfo.CreateSpecificCulture("es-ES"))
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <h3 class="m-0">@prompt.Title</h3>
+                </div>
+                <p class="mb-3">@prompt.Content</p>
+            
+                <div class="d-flex justify-content-end align-items-center mt-auto">
+
+                    <div class="d-flex text-muted gap-3">
+                        <span class="d-flex align-items-center gap-1">
+                            <span class="material-symbols-rounded" style="font-size: 18px;">chat_bubble</span>
+                            @(prompt.Comments?.Length ?? 0)
+                        </span>
+                        <span class="d-flex align-items-center gap-1">
+                            <span class="material-symbols-rounded" style="font-size:18px;">thumb_up</span>
+                            @prompt.Likes
+                        </span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        @if (Model.HasPreviousPage)
+        {
+            <a class="btn btn-outline-secondary"
+               href="/Home/Profile?tab=@Model.ActiveTab&searchTerm=@Model.SearchTerm&sortOrder=@Model.SortOrder&page=@(Model.CurrentPage - 1)">Anterior</a>
+        }
+        else
+        {
+            <button class="btn btn-outline-secondary" disabled>Anterior</button>
+        }
+    
+        <span>Página @Model.CurrentPage de @Model.TotalPages</span>
+    
+        @if (Model.HasNextPage)
+        {
+            <a class="btn btn-outline-secondary"
+               href="/Home/Profile?tab=@Model.ActiveTab&searchTerm=@Model.SearchTerm&sortOrder=@Model.SortOrder&page=@(Model.CurrentPage + 1)">Siguiente</a>
+        }
+        else
+        {
+            <button class="btn btn-outline-secondary" disabled>Siguiente</button>
+        }
+    </div>
+</main>
