@@ -1,0 +1,128 @@
+@model LeaderboardViewModel
+
+@{
+    ViewData["Title"] = "Clasificación";
+    string leagueUrl(string lg, int pg) =>
+        $"/Home/Leaderboard?league={lg}&page={pg}&searchTerm={Uri.EscapeDataString(Model.SearchTerm ?? "")}";
+}
+
+<main class="col-8 mx-auto">
+    <h1>Tabla de clasificación</h1>
+    <p class="lb-subtitle">Selecciona una liga</p>
+
+    <!-- Toggle de liga -->
+    <div class="league-toggle mb-4">
+        <a href="@leagueUrl("Nacional", 1)"
+           class="league-btn @(Model.ActiveLeague == "Nacional" ? "active" : "")">Nacional</a>
+        <a href="@leagueUrl("Local", 1)"
+           class="league-btn @(Model.ActiveLeague == "Local" ? "active" : "")">Local</a>
+    </div>
+
+    <!-- Barra de búsqueda --> 
+    <form method="get" action="/Home/Leaderboard" class="mb-4">
+        <input type="hidden" name="league" value="@Model.ActiveLeague" />
+        <input type="hidden" name="page"   value="1" />
+        <div class="search-bar">
+            <span class="material-symbols-rounded">search</span>
+            <input type="text"
+                   name="searchTerm"
+                   placeholder="Buscar usuario..."
+                   value="@Model.SearchTerm" />
+            @if (!string.IsNullOrEmpty(Model.SearchTerm))
+            {
+                <a href="/Home/Leaderboard?league=@Model.ActiveLeague"
+                   class="btn-search btn-search-clear">
+                    <span class="material-symbols-outlined">
+                        cancel
+                    </span>
+                </a>
+            }
+            <button type="submit" class="btn-search">Buscar</button>
+        </div>
+    </form>
+    
+    <!-- Encabezado de tabla -->
+    <div class="lb-header">
+        <div class="lb-rank-col">#</div>
+        <div class="lb-content-row">
+            <div class="lb-col-user">Usuario</div>
+            <div class="lb-col-stat">Monedas</div>
+            <div class="lb-col-stat">Prompts</div>
+            <div class="lb-col-stat">Me es útil</div>
+        </div>
+    </div>
+
+    <!-- Filas separadas -->
+    <div class="lb-rows">
+        @foreach (var entry in Model.Entries)
+        {
+            <div class="lb-card">
+                <div class="lb-rank-col">
+                    <span class="rank-badge">@entry.Rank</span>
+                </div>
+                <div class="lb-content-row">
+                    <div class="lb-col-user">
+                        <img src="~/images/@entry.Avatar" class="lb-avatar" alt="@entry.Name" />
+                        <span>@entry.Name</span>
+                    </div>
+                    <div class="lb-col-stat">@entry.Coins</div>
+                    <div class="lb-col-stat">@entry.Prompts</div>
+                    <div class="lb-col-stat">@entry.Useful</div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Paginación -->
+    <div class="lb-pagination">
+        @if (Model.HasPreviousPage)
+        {
+            <a class="page-arrow" href="@leagueUrl(Model.ActiveLeague, Model.CurrentPage - 1)">&lt;</a>
+        }
+        else
+        {
+            <span class="page-arrow disabled">&lt;</span>
+        }
+
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            if (i == Model.CurrentPage)
+            {
+                <span class="page-item active">@i</span>
+            }
+            else
+            {
+                <a class="page-item" href="@leagueUrl(Model.ActiveLeague, i)">@i</a>
+            }
+        }
+
+        @if (Model.HasNextPage)
+        {
+            <a class="page-arrow" href="@leagueUrl(Model.ActiveLeague, Model.CurrentPage + 1)">&gt;</a>
+        }
+        else
+        {
+            <span class="page-arrow disabled">&gt;</span>
+        }
+    </div>
+
+    <!-- Mi posición -->
+    @if (Model.MyPosition != null)
+    {
+        <h2 class="my-position-title">Mi posición</h2>
+        <div class="lb-card my-position-card">
+            <div class="lb-rank-col">
+                <span class="rank-badge">@Model.MyPosition.Rank</span>
+            </div>
+            <div class="lb-content-row">
+                <div class="lb-col-user">
+                    <img src="~/images/@ViewData["ProfilePhoto"]" class="lb-avatar" alt="Mi perfil" />
+                    <span>@Model.MyPosition.Name</span>
+                </div>
+                <div class="lb-col-stat">@Model.MyPosition.Coins</div>
+                <div class="lb-col-stat">@Model.MyPosition.Prompts</div>
+                <div class="lb-col-stat">@Model.MyPosition.Useful</div>
+            </div>
+        </div>
+    }
+</main>
