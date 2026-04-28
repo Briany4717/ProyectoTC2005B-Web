@@ -55,6 +55,66 @@ public class HomeController : Controller
         return user;
     }
 
+    private List<Prompt> ApplySearch(List<Prompt> prompts, string searchTerm)
+    {
+        if (string.IsNullOrEmpty(searchTerm)) return prompts;
+        return prompts
+            .Where(p => p.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                        p.Content.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    private List<Prompt> ApplySort(List<Prompt> prompts, string sortOrder)
+    {
+        switch (sortOrder)
+        {
+            case "alpha":
+                return prompts.OrderBy(p => p.Title).ToList();
+            case "popularity":
+                return prompts.OrderByDescending(p => p.Likes).ToList();
+            default:
+                return prompts.OrderByDescending(p => p.date).ToList();
+        }
+    }
+
+    private (List<Prompt> page, int totalPages) ApplyPagination(List<Prompt> prompts, int page, int pageSize)
+    {
+        int totalPages = (int)Math.Ceiling(prompts.Count / (double)pageSize);
+        var pageItems  = prompts.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        return (pageItems, totalPages);
+    }
+
+    
+    // TODO: Reemplazar con llamadas reales a la base de datos 
+    private List<Prompt> GenerarPromptsFalsos(int userId, string tab)
+    {
+        var lista = new List<Prompt>();
+        string tipo = tab == "Saved" ? "Guardado" : "Creado";
+
+        var tagsDisponibles = new List<Tag>
+        {
+            new Tag { Label = "Código",     Icon = "code"     },
+            new Tag { Label = "Educación",  Icon = "school"   },
+            new Tag { Label = "Diseño",     Icon = "brush"    },
+            new Tag { Label = "Marketing",  Icon = "campaign" }
+        };
+
+        for (int i = 1; i <= 10; i++)
+        {
+            lista.Add(new Prompt
+            {
+                Id       = i,
+                Title    = $"Prompt {tipo} #{i}",
+                Content  = $"Este es un contenido de prueba con identificador {i}. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes.",
+                Likes    = i * 2,
+                Comments = new int[i % 5],
+                Tag      = tagsDisponibles[i % tagsDisponibles.Count],
+                date     = DateTime.Now.AddDays(-i)
+            });
+        }
+        return lista;
+    }
+
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
@@ -63,7 +123,6 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         User user = getUserFromId(1);
-
 
         HttpContext.Session.SetInt32("UserId", user.Id);
         HttpContext.Session.SetString("Name", user.Name);
@@ -87,89 +146,58 @@ public class HomeController : Controller
     public IActionResult Profile(string searchTerm = null, string tab = "Created", string sortOrder = "date", int page = 1)
     {
         if (!isSessionStarted())
-        {
             return RedirectToAction("Index");
-        }
 
         User user = getUserFromSession();
         ViewData["Coins"] = user.Coins;
         ViewData["ProfilePhoto"] = HttpContext.Session.GetString("PrifileAddr");
 
-        int pageSize = 4;
+        var prompts = GenerarPromptsFalsos(user.Id, tab);
+        prompts = ApplySearch(prompts, searchTerm);
+        prompts = ApplySort(prompts, sortOrder);
+        (var pagePrompts, int totalPages) = ApplyPagination(prompts, page, pageSize: 4);
+
         var viewModel = new ProfileViewModel
         {
-            User = user,
-            SearchTerm = searchTerm,
-            ActiveTab = tab,
-            SortOrder = sortOrder,
-            CurrentPage = page
+            User        = user,
+            Prompts     = pagePrompts,
+            SearchTerm  = searchTerm,
+            ActiveTab   = tab,
+            SortOrder   = sortOrder,
+            CurrentPage = page,
+            TotalPages  = totalPages
         };
-
-        /* TODO: Sacar de la base de datos */
-        var allMockPrompts = GenerarPromptsFalsos(user.Id, tab);
-
-        // Simular la búsqueda
-        if (!string.IsNullOrEmpty(searchTerm))
-        {
-            allMockPrompts = allMockPrompts
-                .Where(p => p.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                            p.Content.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        // Simular el ordenamiento de la DB
-        switch (sortOrder)
-        {
-            case "alpha":
-                allMockPrompts = allMockPrompts.OrderBy(p => p.Title).ToList();
-                break;
-            case "popularity":
-                allMockPrompts = allMockPrompts.OrderByDescending(p => p.Likes).ToList();
-                break;
-            default: // "date" (por defecto) o mal escrito
-                allMockPrompts = allMockPrompts.OrderByDescending(p => p.date).ToList();
-                break;
-        }
-
-        // Simular la paginación
-        int totalItems = allMockPrompts.Count;
-        viewModel.TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-        viewModel.Prompts = allMockPrompts
-                                .Skip((page - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
 
         return View(viewModel);
     }
 
-    // Simulador de datos que vendrían de la BD
-    private List<Prompt> GenerarPromptsFalsos(int userId, string tab)
+    public IActionResult Library(string searchTerm = null, string category = null, string sortOrder = "date", int page = 1)
     {
-        var lista = new List<Prompt>();
-        string tipo = tab == "Saved" ? "Guardado" : "Creado";
+        User user = getUserFromSession();
+        var prompts = GenerarPromptsFalsos(0, "Created");
 
-        var tagsDisponibles = new List<Tag>
+        if (!string.IsNullOrEmpty(category))
+            prompts = prompts.Where(p => p.Tag?.Label == category).ToList();
+
+        prompts = ApplySearch(prompts, searchTerm);
+        prompts = ApplySort(prompts, sortOrder);
+        (var pagePrompts, int totalPages) = ApplyPagination(prompts, page, pageSize: 6);
+
+        var viewModel = new LibraryViewModel
         {
-            new Tag { Label = "Código", Icon = "code" },
-            new Tag { Label = "Educación", Icon = "school" },
-            new Tag { Label = "Diseño", Icon = "brush" },
-            new Tag { Label = "Marketing", Icon = "campaign" }
+            Prompts          = pagePrompts,
+            CurrentPage      = page,
+            TotalPages       = totalPages,
+            SearchTerm       = searchTerm,
+            SelectedCategory = category,
+            SortOrder        = sortOrder
         };
 
-        for (int i = 1; i <= 10; i++)
-        {
-            lista.Add(new Prompt
-            {
-                Id = i,
-                Title = $"Prompt {tipo} #{i}",
-                Content = $"Este es un contenido de prueba con identificador {i}. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes.",
-                Likes = i * 2,
-                Comments = new int[i % 5],
-                Tag = tagsDisponibles[i % tagsDisponibles.Count],
-                date = DateTime.Now.AddDays(-i)
-            });
-        }
-        return lista;
+        
+        ViewData["Coins"] = user.Coins;
+        ViewData["ProfilePhoto"] = GetProfileAddr(user.ProfilePhoto);
+
+        return View(viewModel);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
