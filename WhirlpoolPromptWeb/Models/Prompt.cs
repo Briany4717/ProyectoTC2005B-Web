@@ -11,7 +11,11 @@ public class Prompt
 
     public int[] Comments { get; set; }
 
+    public int AuthorId { get; set; }
+
     public int Likes { get; set; }
+
+    public bool IsLikedByUser { get; set; }
 }
 
 public class Tag
