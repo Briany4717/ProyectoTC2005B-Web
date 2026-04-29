@@ -211,3 +211,222 @@ h3 {
 .prompts-cont .card h3 {
   color: #413f3f;
 }
+
+/* ── Subtitle ── */
+.lb-subtitle {
+  color: #6c6c6c;
+  margin-bottom: 0.75rem;
+}
+
+/* ── League toggle ── */
+.league-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.league-btn {
+  padding: 0.4rem 1.4rem;
+  border-radius: 3rem;
+  border: 1.5px solid #d2d2d2;
+  background: white;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #6c6c6c;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-family: "Inter", sans-serif;
+}
+
+.league-btn.active {
+  background-color: var(--bs-secondary-color);
+  border-color: var(--bs-secondary-color);
+  color: white;
+  font-weight: 500;
+}
+
+.league-btn:hover:not(.active) {
+  border-color: var(--bs-secondary-color);
+  color: var(--bs-secondary-color);
+}
+
+/* ── Shared layout: rank col + content row ── */
+/* El lb-rank-col es el bloque amarillo que sobresale a la izquierda */
+.lb-header,
+.lb-card {
+  display: flex;
+  align-items: stretch;
+  border-radius: 12px;
+  overflow: hidden;       /* para que el rank-col herede el border-radius */
+}
+
+.lb-rank-col {
+  width: 64px;
+  flex-shrink: 0;
+  background-color: var(--bs-primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--bs-primary-foreground);
+}
+
+/* El área blanca de contenido */
+.lb-content-row {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 120px 120px 120px;
+  align-items: center;
+  padding: 0.7rem 1rem;
+}
+
+/* ── Header ── */
+.lb-header {
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* En el header el rank-col es también amarillo con el símbolo # */
+.lb-header .lb-content-row {
+  background-color: var(--bs-primary-color);
+  color: var(--bs-primary-foreground);
+  font-weight: 600;
+}
+
+.lb-header .lb-col-stat {
+  text-align: center;
+  color: var(--bs-primary-foreground);
+}
+
+/* ── Individual cards ── */
+.lb-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.lb-card {
+  background: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  border: 1px solid #ebebeb;
+}
+
+/* En las cards el rank-col es amarillo y el content es blanco */
+.lb-card .lb-content-row {
+  background: white;
+}
+
+.lb-col-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+  color: #3f3f3f;
+}
+
+.lb-col-stat {
+  text-align: center;
+  color: #4a4a4a;
+}
+
+/* ── Rank badge (círculo dentro del bloque amarillo en las cards) ── */
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--bs-primary-color);
+  color: var(--bs-primary-foreground);
+  font-weight: 700;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+/* ── Avatar ── */
+.lb-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ── Pagination ── */
+.lb-pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-item,
+.page-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #6c6c6c;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.page-item:hover,
+.page-arrow:hover {
+  background-color: #ebebeb;
+  color: #333;
+}
+
+.page-item.active {
+  background-color: var(--bs-primary-color);
+  color: var(--bs-primary-foreground);
+  font-weight: 700;
+}
+
+.page-arrow.disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ── My position ── */
+.my-position-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 0.6rem;
+}
+
+.my-position-card {
+  background-color: white;
+  border: 1.5px solid var(--bs-primary-color);
+}
+
+.my-position-card .lb-content-row {
+  background-color: white;
+}
+
+.search-bar .btn-search-clear {
+  text-decoration: none;
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px;
+  padding: 0 !important;
+  border: none;         
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar .btn-search-clear:hover {
+  background: none;
+  cursor: pointer;
+  color: #3283cb;
+}
