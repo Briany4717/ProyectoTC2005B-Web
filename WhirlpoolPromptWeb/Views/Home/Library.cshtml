@@ -5,7 +5,7 @@
 }
 
 <main class="col-8 mx-auto">
-    <h1>Biblioteca de Prompts</h1>
+    <h1 class="mb-4">Biblioteca de Prompts</h1>
 
     <form method="get" action="/Home/Library" class="d-flex flex-wrap gap-2 my-3">
         <div class="search-bar">
@@ -34,7 +34,7 @@
     <div class="prompts-cont">
         @foreach (var prompt in Model.Prompts)
         {
-            <div class="card mb-3 p-4 col-5">
+            <div class="card mb-3 p-4 col-5" id="prompt-@prompt.Id">
                 <div class="text-muted mb-0 d-flex justify-content-between align-items-center">
                     @if (prompt.Tag != null)
                     {
@@ -56,14 +56,23 @@
 
                 <div class="d-flex justify-content-end align-items-center mt-auto">
                     <div class="d-flex text-muted gap-3">
-                        <span class="d-flex align-items-center gap-1">
+                        <a href="/Home/Comments?promptId=@prompt.Id"
+                           class="d-flex align-items-center gap-1 text-muted text-decoration-none">
                             <span class="material-symbols-rounded" style="font-size: 18px;">chat_bubble</span>
                             @(prompt.Comments?.Length ?? 0)
-                        </span>
-                        <span class="d-flex align-items-center gap-1">
-                            <span class="material-symbols-rounded" style="font-size: 18px;">thumb_up</span>
-                            @prompt.Likes
-                        </span>
+                        </a>
+                        <form method="post" action="/Home/ToggleLikeLibrary" class="d-flex align-items-center">
+                            <input type="hidden" name="promptId"   value="@prompt.Id" />
+                            <input type="hidden" name="searchTerm" value="@Model.SearchTerm" />
+                            <input type="hidden" name="category"   value="@Model.SelectedCategory" />
+                            <input type="hidden" name="sortOrder"  value="@Model.SortOrder" />
+                            <input type="hidden" name="page"       value="@Model.CurrentPage" />
+                            <button type="submit" class="d-flex align-items-center gap-1 border-0 bg-transparent p-0"
+                                    style="color: @(prompt.IsLikedByUser ? "var(--bs-primary-color)" : "inherit"); cursor: pointer;">
+                                <span class="material-symbols-rounded" style="font-size: 18px; font-variation-settings: 'FILL' @(prompt.IsLikedByUser ? 1 : 0);">thumb_up</span>
+                                @prompt.Likes
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
