@@ -76,7 +76,7 @@
                                             <input type="hidden" name="sortOrder" value="@Model.SortOrder" />
                                             <input type="hidden" name="page" value="@Model.CurrentPage" />
                                             <button type="submit" class="d-flex align-items-center gap-1 border-0 bg-transparent p-0"
-                                                    style="color: @(prompt.IsLikedByUser ? "var(--bs-primary-color)" : "inherit"); cursor: pointer;">
+                                                    style="color: @(prompt.IsLikedByUser ? "#25818c" : "inherit"); cursor: pointer;font-weight: @(prompt.IsLikedByUser ? "bold" : "normal");">
                                                 <span class="material-symbols-rounded"
                                                       style="font-size: 18px; font-variation-settings: 'FILL' @(prompt.IsLikedByUser ? 1 : 0);">thumb_up</span>
                                                 @prompt.Likes
