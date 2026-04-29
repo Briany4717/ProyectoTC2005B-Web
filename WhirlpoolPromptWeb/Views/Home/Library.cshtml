@@ -14,92 +14,101 @@
             <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Buscar prompts..." />
 
             <select name="category" class="form-select w-auto border-top-0 border-bottom-0 rounded-0">
-                <option value="" selected="@(string.IsNullOrEmpty(Model.SelectedCategory) ? "selected" : null)">Todas las categorías</option>
-                <option value="Código"    selected="@(Model.SelectedCategory == "Código"    ? "selected" : null)">Código</option>
-                <option value="Educación" selected="@(Model.SelectedCategory == "Educación" ? "selected" : null)">Educación</option>
-                <option value="Diseño"    selected="@(Model.SelectedCategory == "Diseño"    ? "selected" : null)">Diseño</option>
-                <option value="Marketing" selected="@(Model.SelectedCategory == "Marketing" ? "selected" : null)">Marketing</option>
-            </select>
+                <option value="" selected="@(string.IsNullOrEmpty(Model.SelectedCategory) ? "selected" : null)">Todas
+                    las categorías</option>
+                    <option value="Código" selected="@(Model.SelectedCategory == "Código"    ? "selected" : null)">Código
+                    </option>
+                    <option value="Educación" selected="@(Model.SelectedCategory == "Educación" ? "selected" : null)">
+                        Educación</option>
+                        <option value="Diseño" selected="@(Model.SelectedCategory == "Diseño"    ? "selected" : null)">Diseño
+                        </option>
+                        <option value="Marketing" selected="@(Model.SelectedCategory == "Marketing" ? "selected" : null)">
+                            Marketing</option>
+                        </select>
 
-            <select name="sortOrder" class="form-select w-auto border-top-0 border-bottom-0 rounded-0">
-                <option value="date"       selected="@(Model.SortOrder == "date"       ? "selected" : null)">Más recientes</option>
-                <option value="popularity" selected="@(Model.SortOrder == "popularity" ? "selected" : null)">Más populares</option>
-                <option value="alpha"      selected="@(Model.SortOrder == "alpha"      ? "selected" : null)">Alfabético (A-Z)</option>
-            </select>
+                        <select name="sortOrder" class="form-select w-auto border-top-0 border-bottom-0 rounded-0">
+                            <option value="date" selected="@(Model.SortOrder == "date"       ? "selected" : null)">Más recientes
+                            </option>
+                            <option value="popularity" selected="@(Model.SortOrder == "popularity" ? "selected" : null)">Más
+                                populares</option>
+                                <option value="alpha" selected="@(Model.SortOrder == "alpha"      ? "selected" : null)">Alfabético (A-Z)
+                                </option>
+                            </select>
 
-            <button type="submit" class="btn-search">Buscar</button>
-        </div>
-    </form>
+                            <button type="submit" class="btn-search">Buscar</button>
+                        </div>
+                    </form>
 
-    <div class="prompts-cont">
-        @foreach (var prompt in Model.Prompts)
-        {
-            <div class="card mb-3 p-4 col-5" id="prompt-@prompt.Id">
-                <div class="text-muted mb-0 d-flex justify-content-between align-items-center">
-                    @if (prompt.Tag != null)
-                    {
-                        <span class="d-flex align-items-center gap-1">
-                            <span class="material-symbols-rounded" style="font-size: 16px;">@prompt.Tag.Icon</span>
-                            @prompt.Tag.Label
-                        </span>
-                    }
-                    else
-                    {
-                        <span></span>
-                    }
-                    @prompt.date.ToString("d 'de' MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("es-ES"))
-                </div>
-                <div class="d-flex justify-content-between mb-3">
-                    <h3 class="m-0">@prompt.Title</h3>
-                </div>
-                <p class="mb-3">@prompt.Content</p>
+                    <div class="prompts-cont">
+                        @foreach (var prompt in Model.Prompts)
+                        {
+                            <div class="card mb-3 p-4 col-5" id="prompt-@prompt.Id">
+                                <div class="text-muted mb-0 d-flex justify-content-between align-items-center">
+                                    @if (prompt.Tag != null)
+                                    {
+                                        <span class="d-flex align-items-center gap-1">
+                                            <span class="material-symbols-rounded" style="font-size: 16px;">@prompt.Tag.Icon</span>
+                                            @prompt.Tag.Label
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span></span>
+                                    }
+                                    @prompt.date.ToString("d 'de' MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("es-ES"))
+                                </div>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <h3 class="m-0">@prompt.Title</h3>
+                                </div>
+                                <p class="mb-3">@prompt.Content</p>
 
-                <div class="d-flex justify-content-end align-items-center mt-auto">
-                    <div class="d-flex text-muted gap-3">
-                        <a href="/Home/Comments?promptId=@prompt.Id"
-                           class="d-flex align-items-center gap-1 text-muted text-decoration-none">
-                            <span class="material-symbols-rounded" style="font-size: 18px;">chat_bubble</span>
-                            @(prompt.Comments?.Length ?? 0)
-                        </a>
-                        <form method="post" action="/Home/ToggleLikeLibrary" class="d-flex align-items-center">
-                            <input type="hidden" name="promptId"   value="@prompt.Id" />
-                            <input type="hidden" name="searchTerm" value="@Model.SearchTerm" />
-                            <input type="hidden" name="category"   value="@Model.SelectedCategory" />
-                            <input type="hidden" name="sortOrder"  value="@Model.SortOrder" />
-                            <input type="hidden" name="page"       value="@Model.CurrentPage" />
-                            <button type="submit" class="d-flex align-items-center gap-1 border-0 bg-transparent p-0"
-                                    style="color: @(prompt.IsLikedByUser ? "var(--bs-primary-color)" : "inherit"); cursor: pointer;">
-                                <span class="material-symbols-rounded" style="font-size: 18px; font-variation-settings: 'FILL' @(prompt.IsLikedByUser ? 1 : 0);">thumb_up</span>
-                                @prompt.Likes
-                            </button>
-                        </form>
+                                <div class="d-flex justify-content-end align-items-center mt-auto">
+                                    <div class="d-flex text-muted gap-3">
+                                        <a href="/Home/Comments?promptId=@prompt.Id"
+                                               class="d-flex align-items-center gap-1 text-muted text-decoration-none">
+                                            <span class="material-symbols-rounded" style="font-size: 18px;">chat_bubble</span>
+                                            @(prompt.Comments?.Length ?? 0)
+                                        </a>
+                                        <form method="post" action="/Home/ToggleLikeLibrary" class="d-flex align-items-center">
+                                            <input type="hidden" name="promptId" value="@prompt.Id" />
+                                            <input type="hidden" name="searchTerm" value="@Model.SearchTerm" />
+                                            <input type="hidden" name="category" value="@Model.SelectedCategory" />
+                                            <input type="hidden" name="sortOrder" value="@Model.SortOrder" />
+                                            <input type="hidden" name="page" value="@Model.CurrentPage" />
+                                            <button type="submit" class="d-flex align-items-center gap-1 border-0 bg-transparent p-0"
+                                                    style="color: @(prompt.IsLikedByUser ? "var(--bs-primary-color)" : "inherit"); cursor: pointer;">
+                                                <span class="material-symbols-rounded"
+                                                      style="font-size: 18px; font-variation-settings: 'FILL' @(prompt.IsLikedByUser ? 1 : 0);">thumb_up</span>
+                                                @prompt.Likes
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
-                </div>
-            </div>
-        }
-    </div>
 
-    <div class="d-flex justify-content-between align-items-center mt-4">
-        @if (Model.HasPreviousPage)
-        {
-            <a class="btn btn-outline-secondary"
-               href="/Home/Library?searchTerm=@Model.SearchTerm&category=@Model.SelectedCategory&sortOrder=@Model.SortOrder&page=@(Model.CurrentPage - 1)">Anterior</a>
-        }
-        else
-        {
-            <button class="btn btn-outline-secondary" disabled>Anterior</button>
-        }
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <a class="btn btn-outline-secondary"
+                               href="/Home/Library?searchTerm=@Model.SearchTerm&category=@Model.SelectedCategory&sortOrder=@Model.SortOrder&page=@(Model.CurrentPage - 1)">Anterior</a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-outline-secondary" disabled>Anterior</button>
+                        }
 
-        <span>Página @Model.CurrentPage de @Model.TotalPages</span>
+                        <span>Página @Model.CurrentPage de @Model.TotalPages</span>
 
-        @if (Model.HasNextPage)
-        {
-            <a class="btn btn-outline-secondary"
-               href="/Home/Library?searchTerm=@Model.SearchTerm&category=@Model.SelectedCategory&sortOrder=@Model.SortOrder&page=@(Model.CurrentPage + 1)">Siguiente</a>
-        }
-        else
-        {
-            <button class="btn btn-outline-secondary" disabled>Siguiente</button>
-        }
-    </div>
-</main>
+                        @if (Model.HasNextPage)
+                        {
+                            <a class="btn btn-outline-secondary"
+                               href="/Home/Library?searchTerm=@Model.SearchTerm&category=@Model.SelectedCategory&sortOrder=@Model.SortOrder&page=@(Model.CurrentPage + 1)">Siguiente</a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-outline-secondary" disabled>Siguiente</button>
+                        }
+                    </div>
+                </main>

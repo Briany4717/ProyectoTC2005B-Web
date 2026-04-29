@@ -79,10 +79,10 @@ public class HomeController : Controller
     private (List<Prompt> page, int totalPages) ApplyPagination(List<Prompt> prompts, int page, int pageSize)
     {
         int totalPages = (int)Math.Ceiling(prompts.Count / (double)pageSize);
-        var pageItems  = prompts.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+        var pageItems = prompts.Skip((page - 1) * pageSize).Take(pageSize).ToList();
         return (pageItems, totalPages);
     }
-    
+
     // TODO: Reemplazar con llamada real a la base de datos
     private List<LeaderboardEntry> GenerarLeaderboardFalso(string league)
     {
@@ -123,26 +123,26 @@ public class HomeController : Controller
 
         return league == "Local" ? local : nacional;
     }
-    
+
     // TODO: Reemplazar con llamadas reales a la base de datos
     private static List<Prompt> _prompts = new List<Prompt>
     {
-        new Prompt { Id = 1,  AuthorId = 1, Title = "Prompt Creado #1",  Likes = 2,  IsLikedByUser = true,  Comments = new int[1], Tag = new Tag { Label = "Educación",  Icon = "school"   }, date = DateTime.Now.AddDays(-1),  Content = "Este es un contenido de prueba con identificador 1. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
-        new Prompt { Id = 2,  AuthorId = 1, Title = "Prompt Creado #2",  Likes = 4,  Comments = new int[2], Tag = new Tag { Label = "Diseño",     Icon = "brush"    }, date = DateTime.Now.AddDays(-2),  Content = "Este es un contenido de prueba con identificador 2. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
-        new Prompt { Id = 3,  AuthorId = 1, Title = "Prompt Creado #3",  Likes = 6,  IsLikedByUser = true,  Comments = new int[3], Tag = new Tag { Label = "Marketing", Icon = "campaign" }, date = DateTime.Now.AddDays(-3),  Content = "Este es un contenido de prueba con identificador 3. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
-        new Prompt { Id = 4,  AuthorId = 1, Title = "Prompt Creado #4",  Likes = 8,  Comments = new int[4], Tag = new Tag { Label = "Código",    Icon = "code"     }, date = DateTime.Now.AddDays(-4),  Content = "Este es un contenido de prueba con identificador 4. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
-        new Prompt { Id = 5,  AuthorId = 1, Title = "Prompt Creado #5",  Likes = 10, Comments = new int[0], Tag = new Tag { Label = "Educación",  Icon = "school"   }, date = DateTime.Now.AddDays(-5),  Content = "Este es un contenido de prueba con identificador 5. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
-        new Prompt { Id = 6,  AuthorId = 2, Title = "Prompt Creado #6",  Likes = 12, Comments = new int[1], Tag = new Tag { Label = "Diseño",     Icon = "brush"    }, date = DateTime.Now.AddDays(-6),  Content = "Este es un contenido de prueba con identificador 6. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
-        new Prompt { Id = 7,  AuthorId = 2, Title = "Prompt Creado #7",  Likes = 14, Comments = new int[2], Tag = new Tag { Label = "Marketing", Icon = "campaign" }, date = DateTime.Now.AddDays(-7),  Content = "Este es un contenido de prueba con identificador 7. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
-        new Prompt { Id = 8,  AuthorId = 2, Title = "Prompt Creado #8",  Likes = 16, Comments = new int[3], Tag = new Tag { Label = "Código",    Icon = "code"     }, date = DateTime.Now.AddDays(-8),  Content = "Este es un contenido de prueba con identificador 8. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
-        new Prompt { Id = 9,  AuthorId = 2, Title = "Prompt Creado #9",  Likes = 18, Comments = new int[4], Tag = new Tag { Label = "Educación",  Icon = "school"   }, date = DateTime.Now.AddDays(-9),  Content = "Este es un contenido de prueba con identificador 9. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
-        new Prompt { Id = 10, AuthorId = 2, Title = "Prompt Creado #10", Likes = 20, Comments = new int[0], Tag = new Tag { Label = "Diseño",     Icon = "brush"    }, date = DateTime.Now.AddDays(-10), Content = "Este es un contenido de prueba con identificador 10. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
+        new Prompt { Id = 1,  AuthorId = 1, Title = "Aprender React desde cero",  Likes = 120, IsLikedByUser = true,  Comments = new int[1], Tag = new Tag { Label = "Educación",  Icon = "school"   }, date = DateTime.Now.AddDays(-1),  Content = "Actúa como un desarrollador experto en React y explícame los conceptos básicos de los Hooks, dando ejemplos prácticos de useState y useEffect." },
+        new Prompt { Id = 2,  AuthorId = 1, Title = "Generador de paletas de colores", Likes = 45,  Comments = new int[2], Tag = new Tag { Label = "Diseño",     Icon = "brush"    }, date = DateTime.Now.AddDays(-2),  Content = "Eres un diseñador UI/UX experimentado. Genera 5 paletas de colores modernas y accesibles para una aplicación de finanzas, utilizando códigos HEX y justificando tu elección." },
+        new Prompt { Id = 3,  AuthorId = 1, Title = "Campaña para redes sociales",  Likes = 60,  IsLikedByUser = true,  Comments = new int[3], Tag = new Tag { Label = "Marketing", Icon = "campaign" }, date = DateTime.Now.AddDays(-3),  Content = "Diseña una campaña de marketing de 7 días para Instagram enfocada en el lanzamiento de un nuevo producto de café ecológico, detallando el tipo de contenido diario." },
+        new Prompt { Id = 4,  AuthorId = 1, Title = "Refactorización de código Python", Likes = 85,  Comments = new int[4], Tag = new Tag { Label = "Código",    Icon = "code"     }, date = DateTime.Now.AddDays(-4),  Content = "Optimiza mi siguiente script de Python asegurando las mejores prácticas, manejando excepciones correctamente y mejorando la legibilidad. Dame comentarios explicando cada cambio." },
+        new Prompt { Id = 5,  AuthorId = 1, Title = "Plan de estudio para el TOEFL", Likes = 150, Comments = new int[0], Tag = new Tag { Label = "Educación",  Icon = "school"   }, date = DateTime.Now.AddDays(-5),  Content = "Crea un plan de estudio detallado de 4 semanas para prepararme para la certificación de inglés TOEFL. Incluye recursos recomendados para lectura, escucha, escritura y conversación." },
+        new Prompt { Id = 6,  AuthorId = 2, Title = "Diseño de base de datos SQL",  Likes = 112, Comments = new int[1], Tag = new Tag { Label = "Código",     Icon = "code"     }, date = DateTime.Now.AddDays(-6),  Content = "Diseña la estructura de una base de datos relacional para una plataforma de e-commerce. Incluye las tablas de usuarios, productos, y órdenes, especificando llaves foráneas y tipos de datos." },
+        new Prompt { Id = 7,  AuthorId = 2, Title = "Estrategia SEO local",  Likes = 74,  Comments = new int[2], Tag = new Tag { Label = "Marketing", Icon = "campaign" }, date = DateTime.Now.AddDays(-7),  Content = "Desarrolla una estrategia integral de SEO local para una floristería recién inaugurada en el centro de la ciudad, enfocada en mejorar la visibilidad en resultados de Google Maps." },
+        new Prompt { Id = 8,  AuthorId = 2, Title = "Script automatizado para backups", Likes = 96, Comments = new int[3], Tag = new Tag { Label = "Código",    Icon = "code"     }, date = DateTime.Now.AddDays(-8),  Content = "Escribe un script en Bash o PowerShell de unos cuantos comandos que me permita automatizar el respaldo diario de los archivos de una carpeta específica y borrarlos si superan cierta antigüedad." },
+        new Prompt { Id = 9,  AuthorId = 2, Title = "Tutor de matemáticas",  Likes = 210, Comments = new int[4], Tag = new Tag { Label = "Educación",  Icon = "school"   }, date = DateTime.Now.AddDays(-9),  Content = "Actúa como un profesor de cálculo comprensivo. Quiero que me expliques el concepto de las derivadas y su uso en la vida real de manera sencilla y atractiva para un adolescente." },
+        new Prompt { Id = 10, AuthorId = 2, Title = "Guía de estilos CSS", Likes = 105, Comments = new int[0], Tag = new Tag { Label = "Diseño",     Icon = "brush"    }, date = DateTime.Now.AddDays(-10), Content = "Crea una guía concisa de convenciones de nombrado para BEM en CSS. Escribe ejemplos claros de bloques, elementos y modificadores aplicados a una tarjeta de producto." },
     };
 
     private List<Prompt> GenerarPromptsFalsos(int userId, string tab)
     {
         if (userId == 0) return _prompts;
-        if (tab == "Saved")   return _prompts.Where(p => p.AuthorId != userId).ToList();
+        if (tab == "Saved") return _prompts.Where(p => p.AuthorId != userId).ToList();
         return _prompts.Where(p => p.AuthorId == userId).ToList();
     }
 
@@ -160,6 +160,15 @@ public class HomeController : Controller
         ApplyToggleLike(promptId);
         return RedirectToAction("Library", "Home",
             new { searchTerm, category, sortOrder, page },
+            fragment: $"prompt-{promptId}");
+    }
+
+    [HttpPost]
+    public IActionResult ToggleLikeProfile(int promptId, string searchTerm, string tab, string sortOrder, int page)
+    {
+        ApplyToggleLike(promptId);
+        return RedirectToAction("Profile", "Home",
+            new { searchTerm, tab, sortOrder, page },
             fragment: $"prompt-{promptId}");
     }
 
@@ -192,37 +201,37 @@ public class HomeController : Controller
             return RedirectToAction("Index");
 
         User user = getUserFromSession();
-        ViewData["Coins"]        = user.Coins;
+        ViewData["Coins"] = user.Coins;
         ViewData["ProfilePhoto"] = HttpContext.Session.GetString("PrifileAddr");
 
         const int pageSize = 5;
-        var allEntries   = GenerarLeaderboardFalso(league);
-        var myPosition   = allEntries.FirstOrDefault(e => e.IsCurrentUser);
+        var allEntries = GenerarLeaderboardFalso(league);
+        var myPosition = allEntries.FirstOrDefault(e => e.IsCurrentUser);
         var tableEntries = allEntries.Where(e => !e.IsCurrentUser).ToList();
-        
+
         if (!string.IsNullOrWhiteSpace(searchTerm))
             tableEntries = tableEntries
                 .Where(e => e.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .ToList();
-        
-        int totalPages  = (int)Math.Ceiling(tableEntries.Count / (double)pageSize);
+
+        int totalPages = (int)Math.Ceiling(tableEntries.Count / (double)pageSize);
         var pageEntries = tableEntries.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
         var viewModel = new LeaderboardViewModel
         {
-            Entries      = pageEntries,
-            MyPosition   = myPosition,
+            Entries = pageEntries,
+            MyPosition = myPosition,
             ActiveLeague = league,
-            CurrentPage  = page,
-            TotalPages   = totalPages,
-            PageSize     = pageSize,
-            SearchTerm   = searchTerm
+            CurrentPage = page,
+            TotalPages = totalPages,
+            PageSize = pageSize,
+            SearchTerm = searchTerm
         };
 
         return View(viewModel);
     }
-    
-    
+
+
 
     public IActionResult Privacy()
     {
@@ -245,13 +254,13 @@ public class HomeController : Controller
 
         var viewModel = new ProfileViewModel
         {
-            User        = user,
-            Prompts     = pagePrompts,
-            SearchTerm  = searchTerm,
-            ActiveTab   = tab,
-            SortOrder   = sortOrder,
+            User = user,
+            Prompts = pagePrompts,
+            SearchTerm = searchTerm,
+            ActiveTab = tab,
+            SortOrder = sortOrder,
             CurrentPage = page,
-            TotalPages  = totalPages
+            TotalPages = totalPages
         };
 
         return View(viewModel);
@@ -271,14 +280,15 @@ public class HomeController : Controller
 
         var viewModel = new LibraryViewModel
         {
-            Prompts          = pagePrompts,
-            CurrentPage      = page,
-            TotalPages       = totalPages,
-            SearchTerm       = searchTerm,
+            Prompts = pagePrompts,
+            CurrentPage = page,
+            TotalPages = totalPages,
+            SearchTerm = searchTerm,
             SelectedCategory = category,
-            SortOrder        = sortOrder
+            SortOrder = sortOrder
         };
 
+        ViewData["UserId"] = user.Id;
         ViewData["Coins"] = user.Coins;
         ViewData["ProfilePhoto"] = GetProfileAddr(user.ProfilePhoto);
 
