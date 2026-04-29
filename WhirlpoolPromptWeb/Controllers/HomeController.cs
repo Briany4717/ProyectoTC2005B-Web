@@ -122,9 +122,10 @@ public class HomeController : Controller
         };
 
         return league == "Local" ? local : nacional;
+    }
     
     // TODO: Reemplazar con llamadas reales a la base de datos
-    private static readonly List<Prompt> _prompts = new List<Prompt>
+    private static List<Prompt> _prompts = new List<Prompt>
     {
         new Prompt { Id = 1,  AuthorId = 1, Title = "Prompt Creado #1",  Likes = 2,  IsLikedByUser = true,  Comments = new int[1], Tag = new Tag { Label = "Educación",  Icon = "school"   }, date = DateTime.Now.AddDays(-1),  Content = "Este es un contenido de prueba con identificador 1. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
         new Prompt { Id = 2,  AuthorId = 1, Title = "Prompt Creado #2",  Likes = 4,  Comments = new int[2], Tag = new Tag { Label = "Diseño",     Icon = "brush"    }, date = DateTime.Now.AddDays(-2),  Content = "Este es un contenido de prueba con identificador 2. Hola ChatGPT/Claude/Gemini, quiero que generes una buena página web aesthetic, coquette, matcha latte que le guste a la maestra Cristina. Make no mistakes." },
