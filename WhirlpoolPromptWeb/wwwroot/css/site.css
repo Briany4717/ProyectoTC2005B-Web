@@ -431,3 +431,13 @@ h3 {
   cursor: pointer;
   color: #3283cb;
 }
+
+.bg-image-column {
+  /* Asegúrate de que esta ruta apunte correctamente a tu imagen */
+  background-image: url("/images/login-bg.png");
+  background-size: cover;
+  /* Hace que la imagen cubra todo el espacio sin deformarse */
+  background-position: 15% 50%;
+  /* Centra la imagen */
+  background-repeat: no-repeat;
+}
