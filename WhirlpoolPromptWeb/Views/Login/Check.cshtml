@@ -1,7 +1,13 @@
-@model WhirlpoolPromptWeb.Models.LoginModel
+@model WhirlpoolPromptWeb.Models.UserSession
 
 @{
     ViewData["Title"] = "Checker";
+
 }
 
-<h1>hola</h1>
+<h1>Datos de sesión</h1>
+
+<p>Nombre: @Model.Name</p>
+<p>Id: @Model.UserId</p>
+<p>Coins: @Model.Coins</p>
+<p>Foto: @Model.ProfileAddr</p>
