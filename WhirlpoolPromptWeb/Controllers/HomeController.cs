@@ -45,12 +45,10 @@ public class HomeController : Controller
     private User getUserFromSession()
     {
         User user = new User();
+
         user.Id = (int)HttpContext.Session.GetInt32("UserId");
         user.Name = HttpContext.Session.GetString("Name");
-        user.LastName = HttpContext.Session.GetString("Lastname");
         user.Coins = (int)HttpContext.Session.GetInt32("Coins");
-        user.LocalRanking = HttpContext.Session.GetInt32("LocalRanking") ?? 0;
-        user.NationalRanking = HttpContext.Session.GetInt32("NationalRanking") ?? 0;
 
         return user;
     }
@@ -231,11 +229,6 @@ public class HomeController : Controller
     }
 
 
-
-    public IActionResult Privacy()
-    {
-        return View();
-    }
 
     [RequireSession]
     public IActionResult Profile(string searchTerm = null, string tab = "Created", string sortOrder = "date", int page = 1)

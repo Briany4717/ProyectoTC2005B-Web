@@ -23,10 +23,10 @@ public class LoginController : Controller
     {
         if (!ModelState.IsValid) return View(model);
 
-        model.User = model.User.Trim();
+        model.Email = model.Email.Trim();
         model.Password = model.Password.Trim();
 
-        bool userIsValid = UserAuthentication(model.User, model.Password);
+        bool userIsValid = UserAuthentication(model.Email, model.Password);
 
         if (userIsValid)
         {
@@ -66,7 +66,7 @@ public class LoginController : Controller
 
         user.Coins = 67;
 
-        user.ProfileAddr = GetProfileAddr(ProfilePhoto.yoshi);
+        user.ProfileAddr = GetProfileAddr(ProfilePhoto.mario);
 
         return user;
     }
