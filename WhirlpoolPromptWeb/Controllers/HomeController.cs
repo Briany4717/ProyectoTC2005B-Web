@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using WhirlpoolPromptWeb.Filters;
 using WhirlpoolPromptWeb.Models;
 
 namespace WhirlpoolPromptWeb.Controllers;
@@ -195,11 +196,9 @@ public class HomeController : Controller
         return View(user);
     }
 
+    [RequireSession]
     public IActionResult Leaderboard(string league = "Nacional", int page = 1, string searchTerm = null)
     {
-        if (!isSessionStarted())
-            return RedirectToAction("Index");
-
         User user = getUserFromSession();
         ViewData["Coins"] = user.Coins;
         ViewData["ProfilePhoto"] = HttpContext.Session.GetString("PrifileAddr");
@@ -238,10 +237,9 @@ public class HomeController : Controller
         return View();
     }
 
+    [RequireSession]
     public IActionResult Profile(string searchTerm = null, string tab = "Created", string sortOrder = "date", int page = 1)
     {
-        if (!isSessionStarted())
-            return RedirectToAction("Index");
 
         User user = getUserFromSession();
         ViewData["Coins"] = user.Coins;

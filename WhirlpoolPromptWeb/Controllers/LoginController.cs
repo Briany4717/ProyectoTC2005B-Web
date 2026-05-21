@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WhirlpoolPromptWeb.Models;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Authorization;
+using WhirlpoolPromptWeb.Filters;
 
 
 namespace WhirlpoolPromptWeb.Controllers;
@@ -8,15 +11,20 @@ namespace WhirlpoolPromptWeb.Controllers;
 public class LoginController : Controller
 {
     [HttpGet]
+    [AllowAnonymous]
     public IActionResult Login()
     {
         return View();
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public IActionResult Login(LoginModel model)
     {
         if (!ModelState.IsValid) return View(model);
+
+        model.User = model.User.Trim();
+        model.Password = model.Password.Trim();
 
         bool userIsValid = UserAuthentication(model.User, model.Password);
 
@@ -81,9 +89,9 @@ public class LoginController : Controller
     }
 
     [HttpGet("check")]
+    [RequireSession]
     public IActionResult Check()
     {
-        if (!IsSessionActive()) return RedirectToAction("Login");
 
         var model = new UserSession
         {
@@ -97,6 +105,5 @@ public class LoginController : Controller
         return View(model);
     }
 
-    private bool IsSessionActive() => HttpContext.Session.GetInt32("UserId") != null;
 
 }

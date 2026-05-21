@@ -493,3 +493,17 @@ html:has(.login-page) {
   background-color: white;
   z-index: 2;
 }
+
+/* Login page: make the form a bit smaller and centered */
+.login-form-container {
+  max-width: 700px;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .login-form-container {
+    max-width: 92%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
