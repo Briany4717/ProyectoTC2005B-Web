@@ -1,0 +1,74 @@
+@model WhirlpoolPromptWeb.Models.LoginModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+<div class="container-fluid vh-100 p-0 login-page">
+    <div class="row h-100 g-0">
+
+        <!-- Columna izquierda: formulario -->
+        <div class="col-12 col-md-6 d-flex align-items-center login-form-col">
+            <div class="px-5 mx-auto login-form-container">
+
+                <!-- Logo Whirlpool -->
+                <div class="mb-4">
+                    <img src="@(Url.Content("~/images/logo-whirlpool.png"))" class="img-fluid w-50 d-block mx-auto"
+                         alt="Whirlpool Logo" />
+                </div>
+
+                <h2 class="mb-4">Inicio de Sesión</h2>
+
+                <form asp-action="Login" asp-controller="Login" method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Correo electrónico</label>
+                        <input asp-for="Email" class="form-control">
+
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="contrasena" class="form-label">Contraseña</label>
+                        <input asp-for="Password" class="form-control">
+
+                        <span asp-validation-for="Password" class="text-danger"></span>
+
+                    </div>
+
+                    <button type="submit" class="btn btn-whirlpool w-100 mb-3">
+                        Iniciar Sesión
+                    </button>
+
+                    <p class="text-center">
+                        ¿No tienes cuenta?
+                        <a href="#" class="link-registro">Regístrate</a>
+                    </p>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Columna derecha: imagen, oculta en móvil -->
+        <div class="col-md-6 d-none d-md-block p-0 login-img-col"></div>
+
+    </div>
+</div>
+
+<!-- 
+  Validar sin necesidad de recargar la pagina
+-->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

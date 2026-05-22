@@ -431,3 +431,79 @@ h3 {
   cursor: pointer;
   color: #3283cb;
 }
+
+.bg-image-column {
+  /* Asegúrate de que esta ruta apunte correctamente a tu imagen */
+  background-image: url("/images/login-bg.png");
+  background-size: cover;
+  /* Hace que la imagen cubra todo el espacio sin deformarse */
+  background-position: 15% 50%;
+  /* Centra la imagen */
+  background-repeat: no-repeat;
+}
+
+.btn-whirlpool {
+  background-color: #4a919e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+}
+
+.btn-whirlpool:hover {
+  background-color: #166f6f;
+  color: white;
+}
+
+.link-registro {
+  color: #e9a820;
+  text-decoration: none;
+}
+
+.link-registro:hover {
+  color: #c98a18;
+}
+
+/* Solo aplica cuando existe .login-page en la página */
+body:has(.login-page) {
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html:has(.login-page) {
+  overflow: hidden;
+  height: 100%;
+}
+
+.login-img-col {
+  background-image: url("/images/login-bg.png");
+  background-size: 200%;
+  /* ajusta hacia la izquierda */
+  background-position: 1% 30%;
+  background-repeat: no-repeat;
+  margin-left: -50px;
+  /* compensar el margen negativo */
+  width: calc(50% + 50px);
+  z-index: 1;
+}
+
+.login-form-col {
+  border-radius: 0 30px 30px 0;
+  background-color: white;
+  z-index: 2;
+}
+
+/* Login page: make the form a bit smaller and centered */
+.login-form-container {
+  max-width: 700px;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .login-form-container {
+    max-width: 92%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}

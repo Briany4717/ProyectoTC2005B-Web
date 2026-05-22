@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using WhirlpoolPromptWeb.Filters;
 using WhirlpoolPromptWeb.Models;
 
 namespace WhirlpoolPromptWeb.Controllers;
@@ -44,12 +45,10 @@ public class HomeController : Controller
     private User getUserFromSession()
     {
         User user = new User();
+
         user.Id = (int)HttpContext.Session.GetInt32("UserId");
         user.Name = HttpContext.Session.GetString("Name");
-        user.LastName = HttpContext.Session.GetString("Lastname");
         user.Coins = (int)HttpContext.Session.GetInt32("Coins");
-        user.LocalRanking = HttpContext.Session.GetInt32("LocalRanking") ?? 0;
-        user.NationalRanking = HttpContext.Session.GetInt32("NationalRanking") ?? 0;
 
         return user;
     }
@@ -195,11 +194,9 @@ public class HomeController : Controller
         return View(user);
     }
 
+    [RequireSession]
     public IActionResult Leaderboard(string league = "Nacional", int page = 1, string searchTerm = null)
     {
-        if (!isSessionStarted())
-            return RedirectToAction("Index");
-
         User user = getUserFromSession();
         ViewData["Coins"] = user.Coins;
         ViewData["ProfilePhoto"] = HttpContext.Session.GetString("PrifileAddr");
@@ -233,15 +230,9 @@ public class HomeController : Controller
 
 
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
+    [RequireSession]
     public IActionResult Profile(string searchTerm = null, string tab = "Created", string sortOrder = "date", int page = 1)
     {
-        if (!isSessionStarted())
-            return RedirectToAction("Index");
 
         User user = getUserFromSession();
         ViewData["Coins"] = user.Coins;
@@ -305,4 +296,6 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
+
 }
