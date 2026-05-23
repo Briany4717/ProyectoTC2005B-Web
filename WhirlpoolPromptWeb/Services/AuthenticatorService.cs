@@ -27,14 +27,22 @@ public class AuthenticatorService : IAuthenticatorService
         var content = new StringContent(json, System.Text.Encoding.UTF8,
         "application/json");
 
-        var response = await _httpClient.PostAsync(url, content);
+        try
+        {
+            var response = await _httpClient.PostAsync(url, content);
 
-        if (!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
+                return new List<UserSession>();
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<List<UserSession>>(jsonResponse) ?? new List<UserSession>();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"AuthenticateUserAPI error: {ex.Message}");
             return new List<UserSession>();
-
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-
-        return JsonSerializer.Deserialize<List<UserSession>>(jsonResponse) ?? new List<UserSession>();
+        }
 
     }
 }

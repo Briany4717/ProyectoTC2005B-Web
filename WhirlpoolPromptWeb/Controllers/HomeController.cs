@@ -5,6 +5,8 @@ using WhirlpoolPromptWeb.Models;
 
 namespace WhirlpoolPromptWeb.Controllers;
 
+
+[RequireSession]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -178,15 +180,8 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        User user = getUserFromId(1);
 
-        HttpContext.Session.SetInt32("UserId", user.Id);
-        HttpContext.Session.SetString("Name", user.Name);
-        HttpContext.Session.SetString("Lastname", user.LastName);
-        HttpContext.Session.SetString("PrifileAddr", GetProfileAddr(user.ProfilePhoto));
-        HttpContext.Session.SetInt32("Coins", user.Coins);
-        HttpContext.Session.SetInt32("LocalRanking", user.LocalRanking);
-        HttpContext.Session.SetInt32("NationalRanking", user.NationalRanking);
+        var user = getUserFromSession();
 
         ViewData["Coins"] = user.Coins;
         ViewData["ProfilePhoto"] = GetProfileAddr(user.ProfilePhoto);
@@ -194,12 +189,11 @@ public class HomeController : Controller
         return View(user);
     }
 
-    [RequireSession]
     public IActionResult Leaderboard(string league = "Nacional", int page = 1, string searchTerm = null)
     {
         User user = getUserFromSession();
         ViewData["Coins"] = user.Coins;
-        ViewData["ProfilePhoto"] = HttpContext.Session.GetString("PrifileAddr");
+        ViewData["ProfilePhoto"] = HttpContext.Session.GetString("ProfileAddr");
 
         const int pageSize = 5;
         var allEntries = GenerarLeaderboardFalso(league);
@@ -230,13 +224,12 @@ public class HomeController : Controller
 
 
 
-    [RequireSession]
     public IActionResult Profile(string searchTerm = null, string tab = "Created", string sortOrder = "date", int page = 1)
     {
 
         User user = getUserFromSession();
         ViewData["Coins"] = user.Coins;
-        ViewData["ProfilePhoto"] = HttpContext.Session.GetString("PrifileAddr");
+        ViewData["ProfilePhoto"] = HttpContext.Session.GetString("ProfileAddr");
 
         var prompts = GenerarPromptsFalsos(user.Id, tab);
         prompts = ApplySearch(prompts, searchTerm);

@@ -42,7 +42,7 @@ public class LoginController : Controller
             return RedirectToAction("Check", "Login");
         }
 
-        // agregar error si no se encuentra en la base de datos
+        // si no se encuentra en la base de datos
         ModelState.AddModelError(string.Empty, "Correo o contraseña incorrectos.");
 
         return View(model);
@@ -51,16 +51,14 @@ public class LoginController : Controller
 
     private void SetUserSession(UserSession user)
     {
-
         HttpContext.Session.SetInt32("UserId", user.id_usuario);
         HttpContext.Session.SetString("Name", user.nombre);
         HttpContext.Session.SetString("ProfileAddr", user.imagen_perfil);
         HttpContext.Session.SetInt32("Coins", user.saldo_total);
-
     }
 
 
-    private async Task<UserSession> UserAuthentication(string email, string password)
+    private async Task<UserSession?> UserAuthentication(string email, string password)
     {
         List<UserSession> userAuthentication = await _service.AuthenticateUserAPI(email, password);
         if (userAuthentication == null || userAuthentication.Count == 0) return null;
