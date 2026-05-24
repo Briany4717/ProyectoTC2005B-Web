@@ -10,6 +10,14 @@ namespace WhirlpoolPromptWeb.Controllers;
 [Route("[controller]")]
 public class LoginController : Controller
 {
+
+    private readonly IAuthenticatorService _service;
+
+    public LoginController(IAuthenticatorService service)
+    {
+        _service = service;
+    }
+
     [HttpGet]
     [AllowAnonymous]
     public IActionResult Login()
@@ -19,73 +27,44 @@ public class LoginController : Controller
 
     [HttpPost]
     [AllowAnonymous]
-    public IActionResult Login(LoginModel model)
+    public async Task<IActionResult> Login(LoginModel model)
     {
         if (!ModelState.IsValid) return View(model);
 
         model.Email = model.Email.Trim();
         model.Password = model.Password.Trim();
 
-        bool userIsValid = UserAuthentication(model.Email, model.Password);
+        var userSession = await UserAuthentication(model.Email, model.Password);
 
-        if (userIsValid)
+        if (userSession != null)
         {
-            SetUserSession(1);
+            SetUserSession(userSession);
             return RedirectToAction("Check", "Login");
         }
 
-        // agregar error si no se encuentra en la base de datos
-        ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos.");
+        // si no se encuentra en la base de datos
+        ModelState.AddModelError(string.Empty, "Correo o contraseña incorrectos.");
 
         return View(model);
 
-
     }
 
-    private bool SetUserSession(int userID)
+    private void SetUserSession(UserSession user)
     {
-
-        UserSession user = getUserFromId(userID);
-
-        HttpContext.Session.SetInt32("UserId", user.UserId);
-        HttpContext.Session.SetString("Name", user.Name);
-        HttpContext.Session.SetString("ProfileAddr", user.ProfileAddr);
-        HttpContext.Session.SetInt32("Coins", user.Coins);
-
-        return true;
-
+        HttpContext.Session.SetInt32("UserId", user.id_usuario);
+        HttpContext.Session.SetString("Name", user.nombre);
+        HttpContext.Session.SetString("ProfileAddr", user.imagen_perfil);
+        HttpContext.Session.SetInt32("Coins", user.saldo_total);
     }
 
-    private UserSession getUserFromId(int id)
+
+    private async Task<UserSession?> UserAuthentication(string email, string password)
     {
-        UserSession user = new UserSession();
+        List<UserSession> userAuthentication = await _service.AuthenticateUserAPI(email, password);
+        if (userAuthentication == null || userAuthentication.Count == 0) return null;
 
-        /* TODO: Obtener el user de la base de datos */
-        user.UserId = id;
-        user.Name = "Yoshi";
+        return userAuthentication[0];
 
-        user.Coins = 67;
-
-        user.ProfileAddr = GetProfileAddr(ProfilePhoto.mario);
-
-        return user;
-    }
-
-    private string GetProfileAddr(ProfilePhoto profile)
-    {
-        switch (profile)
-        {
-            case ProfilePhoto.mario:
-                return "mario-bros.png";
-            default:
-                return "mario-bros.png";
-        }
-    }
-
-    private bool UserAuthentication(string user, string password)
-    {
-        // logica de autenticacion
-        return true;
     }
 
     [HttpGet("check")]
@@ -95,10 +74,10 @@ public class LoginController : Controller
 
         var model = new UserSession
         {
-            UserId = HttpContext.Session.GetInt32("UserId") ?? 0,
-            Name = HttpContext.Session.GetString("Name") ?? string.Empty,
-            ProfileAddr = HttpContext.Session.GetString("ProfileAddr") ?? string.Empty,
-            Coins = HttpContext.Session.GetInt32("Coins") ?? 0
+            id_usuario = HttpContext.Session.GetInt32("UserId") ?? 0,
+            nombre = HttpContext.Session.GetString("Name") ?? string.Empty,
+            imagen_perfil = HttpContext.Session.GetString("ProfileAddr") ?? string.Empty,
+            saldo_total = HttpContext.Session.GetInt32("Coins") ?? 0
         };
 
 

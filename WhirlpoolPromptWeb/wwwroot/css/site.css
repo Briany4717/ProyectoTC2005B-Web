@@ -432,16 +432,6 @@ h3 {
   color: #3283cb;
 }
 
-.bg-image-column {
-  /* Asegúrate de que esta ruta apunte correctamente a tu imagen */
-  background-image: url("/images/login-bg.png");
-  background-size: cover;
-  /* Hace que la imagen cubra todo el espacio sin deformarse */
-  background-position: 15% 50%;
-  /* Centra la imagen */
-  background-repeat: no-repeat;
-}
-
 .btn-whirlpool {
   background-color: #4a919e;
   color: white;
@@ -463,12 +453,13 @@ h3 {
   color: #c98a18;
 }
 
-/* Solo aplica cuando existe .login-page en la página */
 body:has(.login-page) {
   overflow: hidden;
   height: 100%;
   margin: 0;
   padding: 0;
+  margin-bottom: 0;
+  background-color: #1a1a1a;
 }
 
 html:has(.login-page) {
@@ -478,7 +469,7 @@ html:has(.login-page) {
 
 .login-img-col {
   background-image: url("/images/login-bg.png");
-  background-size: 200%;
+  background-size: cover;
   /* ajusta hacia la izquierda */
   background-position: 1% 30%;
   background-repeat: no-repeat;
@@ -494,7 +485,6 @@ html:has(.login-page) {
   z-index: 2;
 }
 
-/* Login page: make the form a bit smaller and centered */
 .login-form-container {
   max-width: 700px;
   width: 100%;
