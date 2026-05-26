@@ -126,7 +126,7 @@ public class HomeController : Controller
     }
 
     // TODO: Reemplazar con llamadas reales a la base de datos
-    private static List<Prompt> _prompts = new List<Prompt>
+    public static List<Prompt> _prompts = new List<Prompt>
     {
         new Prompt { Id = 1,  AuthorId = 1, Title = "Aprender React desde cero",  Likes = 120, IsLikedByUser = true,  Comments = new int[1], Tag = new Tag { Label = "Educación",  Icon = "school"   }, date = DateTime.Now.AddDays(-1),  Content = "Actúa como un desarrollador experto en React y explícame los conceptos básicos de los Hooks, dando ejemplos prácticos de useState y useEffect." },
         new Prompt { Id = 2,  AuthorId = 1, Title = "Generador de paletas de colores", Likes = 45,  Comments = new int[2], Tag = new Tag { Label = "Diseño",     Icon = "brush"    }, date = DateTime.Now.AddDays(-2),  Content = "Eres un diseñador UI/UX experimentado. Genera 5 paletas de colores modernas y accesibles para una aplicación de finanzas, utilizando códigos HEX y justificando tu elección." },
