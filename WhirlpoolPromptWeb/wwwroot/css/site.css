@@ -497,3 +497,49 @@ html:has(.login-page) {
     padding-right: 0.5rem;
   }
 }
+
+
+
+
+
+
+
+
+
+.toast-success {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-150%);
+  background-color: #d1f5e0;
+  color: #1f7a4c;
+  border: 1px solid #1f7a4c33;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  font-weight: 500;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1050;
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  max-width: 90vw;
+  white-space: nowrap;
+}
+
+.toast-success.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.toast-success .material-symbols-rounded {
+  font-size: 1.4rem;
+  color: #1f7a4c;
+}
+
+.create-prompt-form ::placeholder {
+  color: #9ca3af;
+  opacity: 1;
+}

@@ -1,0 +1,51 @@
+@model WhirlpoolPromptWeb.Models.CreatePromptModel
+
+@{
+    ViewData["Title"] = "Crear Prompt";
+}
+
+<main class="col-8 mx-auto">
+    <h1 class="mb-4">Crear nuevo prompt</h1>
+
+    <form asp-action="CreatePrompt" asp-controller="CreatePrompt" method="post" class="create-prompt-form">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label">Título</label>
+            <input asp-for="Title" class="form-control"
+                   placeholder="Título de tu publicación. ¿De qué trata tu prompt?" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Category" class="form-label">Categoría</label>
+            <select asp-for="Category" class="form-select">
+                <option value="">Seleccione una categoría</option>
+                <option value="Código">Código</option>
+                <option value="Educación">Educación</option>
+                <option value="Diseño">Diseño</option>
+                <option value="Marketing">Marketing</option>
+            </select>
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Content" class="form-label">Prompt</label>
+            <textarea asp-for="Content" class="form-control" rows="10"
+                      placeholder="Escribe aquí tu prompt..."></textarea>
+            <span asp-validation-for="Content" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-end mt-4">
+            <button type="submit" class="btn btn-whirlpool px-5 py-2">Publicar</button>
+        </div>
+
+    </form>
+</main>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

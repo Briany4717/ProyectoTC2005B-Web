@@ -12,7 +12,8 @@
     href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
     rel="stylesheet">
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=brush,campaign,chat_bubble,code,leaderboard,school,search,thumb_up" />
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=brush,campaign,chat_bubble,code,leaderboard,school,search,thumb_up" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=check_circle" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WhirlpoolPromptWeb.styles.css" asp-append-version="true" />
@@ -47,7 +48,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-light">
                                 <li>
-                                    <a class="dropdown-item" asp-area="" asp-controller="Home"
+                                    <a class="dropdown-item" asp-area="" asp-controller="CreatePrompt"
                                            asp-action="CreatePrompt">
                                         Crear Prompt
                                     </a>
@@ -81,12 +82,20 @@
             </div>
         </nav>
     </header>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="toast-success" id="toastSuccess" role="alert">
+            <span class="material-symbols-rounded">check_circle</span>
+            <span>@TempData["SuccessMessage"]</span>
+        </div>
+    }
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
     <!-- Comentado por ahora
     <footer class="border-top footer text-muted">
         <div class="container">
