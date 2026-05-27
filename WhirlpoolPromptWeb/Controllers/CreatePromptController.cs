@@ -63,7 +63,6 @@ public class CreatePromptController : Controller
 
         int authorId = HttpContext.Session.GetInt32("UserId") ?? 0;
 
-        // Mapear la categoría a su id numérico para la API
         int idCategoria = model.Category switch
         {
             "Código"     => 1,
