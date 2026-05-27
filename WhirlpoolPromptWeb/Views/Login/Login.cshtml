@@ -55,15 +55,13 @@
             </div>
         </div>
 
-        <!-- Columna derecha: imagen, oculta en móvil -->
+        <!-- Columna derecha -->
         <div class="col-md-6 d-none d-md-block p-0 login-img-col"></div>
 
     </div>
 </div>
 
-<!-- 
-  Validar sin necesidad de recargar la pagina
--->
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
