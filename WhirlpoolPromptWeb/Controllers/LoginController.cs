@@ -34,19 +34,6 @@ public class LoginController : Controller
         model.Email = model.Email.Trim();
         model.Password = model.Password.Trim();
 
-        // Login de prueba
-        if (model.Email == "dev@dev.com")
-        {
-            var fakeSession = new UserSession
-            {
-                id_usuario = 1,
-                nombre = "Mario",
-                imagen_perfil = "mario-bros.png",
-                saldo_total = 257
-            };
-            SetUserSession(fakeSession);
-            return RedirectToAction("Check", "Login");
-        }
 
         var userSession = await UserAuthentication(model.Email, model.Password);
 
