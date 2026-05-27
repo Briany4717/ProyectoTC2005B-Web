@@ -164,15 +164,6 @@ public class HomeController : Controller
             fragment: $"prompt-{promptId}");
     }
 
-    [HttpPost]
-    public IActionResult ToggleLikeProfile(int promptId, string searchTerm, string tab, string sortOrder, int page)
-    {
-        ApplyToggleLike(promptId);
-        return RedirectToAction("Profile", "Home",
-            new { searchTerm, tab, sortOrder, page },
-            fragment: $"prompt-{promptId}");
-    }
-
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
@@ -217,34 +208,6 @@ public class HomeController : Controller
             TotalPages = totalPages,
             PageSize = pageSize,
             SearchTerm = searchTerm
-        };
-
-        return View(viewModel);
-    }
-
-
-
-    public IActionResult Profile(string searchTerm = null, string tab = "Created", string sortOrder = "date", int page = 1)
-    {
-
-        User user = getUserFromSession();
-        ViewData["Coins"] = user.Coins;
-        ViewData["ProfilePhoto"] = HttpContext.Session.GetString("ProfileAddr");
-
-        var prompts = GenerarPromptsFalsos(user.Id, tab);
-        prompts = ApplySearch(prompts, searchTerm);
-        prompts = ApplySort(prompts, sortOrder);
-        (var pagePrompts, int totalPages) = ApplyPagination(prompts, page, pageSize: 4);
-
-        var viewModel = new ProfileViewModel
-        {
-            User = user,
-            Prompts = pagePrompts,
-            SearchTerm = searchTerm,
-            ActiveTab = tab,
-            SortOrder = sortOrder,
-            CurrentPage = page,
-            TotalPages = totalPages
         };
 
         return View(viewModel);
