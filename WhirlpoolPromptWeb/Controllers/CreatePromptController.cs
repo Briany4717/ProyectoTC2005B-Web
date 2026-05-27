@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using WhirlpoolPromptWeb.Controllers;
 using WhirlpoolPromptWeb.Filters;
 using WhirlpoolPromptWeb.Models;
+using WhirlpoolPromptWeb.Services;
 
 namespace WhirlpoolPromptWeb.Controllers;
 
@@ -9,6 +10,12 @@ namespace WhirlpoolPromptWeb.Controllers;
 public class CreatePromptController : Controller
 {
     private const int CoinsReward = 150;
+    private readonly ICreatePromptService _createPromptService;
+
+    public CreatePromptController(ICreatePromptService createPromptService)
+    {
+        _createPromptService = createPromptService;
+    }
 
     private Tag GetTagFromCategory(string category)
     {
@@ -41,7 +48,7 @@ public class CreatePromptController : Controller
     }
 
     [HttpPost]
-    public IActionResult CreatePrompt(CreatePromptModel model)
+    public async Task<IActionResult> CreatePrompt(CreatePromptModel model)
     {
         SetNavbarData();
 
@@ -55,24 +62,29 @@ public class CreatePromptController : Controller
         }
 
         int authorId = HttpContext.Session.GetInt32("UserId") ?? 0;
-        int newId = HomeController._prompts.Count > 0
-            ? HomeController._prompts.Max(p => p.Id) + 1
-            : 1;
 
-        var newPrompt = new Prompt
+        // Mapear la categoría a su id numérico para la API
+        int idCategoria = model.Category switch
         {
-            Id = newId,
-            AuthorId = authorId,
-            Title = model.Title.Trim(),
-            Content = model.Content.Trim(),
-            Tag = tag,
-            date = DateTime.Now,
-            Likes = 0,
-            IsLikedByUser = false,
-            Comments = new int[0]
+            "Código"     => 1,
+            "Educación"  => 2,
+            "Diseño"     => 3,
+            "Marketing"  => 4,
+            _            => 0
         };
 
-        HomeController._prompts.Add(newPrompt);
+        var resultado = await _createPromptService.InsertarPrompt(
+            model.Title.Trim(),
+            model.Content.Trim(),
+            idCategoria,
+            authorId
+        );
+
+        if (resultado == null)
+        {
+            ModelState.AddModelError(string.Empty, "No se pudo guardar el prompt. Intenta de nuevo.");
+            return View(model);
+        }
 
         int currentCoins = HttpContext.Session.GetInt32("Coins") ?? 0;
         HttpContext.Session.SetInt32("Coins", currentCoins + CoinsReward);
