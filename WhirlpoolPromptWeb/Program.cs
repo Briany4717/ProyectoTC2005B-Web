@@ -1,9 +1,19 @@
+using WhirlpoolPromptWeb.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient<IAuthenticatorService, AuthenticatorService>()
+.ConfigurePrimaryHttpMessageHandler(() =>
+new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback =
+HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+});
+
+builder.Services.AddHttpClient<IProfileService, ProfileService>()
 .ConfigurePrimaryHttpMessageHandler(() =>
 new HttpClientHandler
 {
