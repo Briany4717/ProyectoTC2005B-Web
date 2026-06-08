@@ -1,6 +1,21 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace WhirlpoolPromptWeb.Models;
+
+// Flask returns dates as RFC 2822 ("Thu, 16 Apr 2026 21:32:28 GMT"), not ISO 8601.
+public class Rfc2822DateTimeConverter : JsonConverter<DateTime>
+{
+    public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var raw = reader.GetString();
+        return DateTime.Parse(raw!, System.Globalization.CultureInfo.InvariantCulture,
+            System.Globalization.DateTimeStyles.AdjustToUniversal);
+    }
+
+    public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+        => writer.WriteStringValue(value.ToString("R"));
+}
 
 public class PerfilUsuarioResponse
 {
@@ -23,9 +38,11 @@ public class PerfilUsuarioResponse
     public string? Descripcion { get; set; }
 
     [JsonPropertyName("fecha_registro")]
+    [JsonConverter(typeof(Rfc2822DateTimeConverter))]
     public DateTime FechaRegistro { get; set; }
 
     [JsonPropertyName("coins")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public int Coins { get; set; }
 
     [JsonPropertyName("LocalRanking")]
@@ -50,6 +67,7 @@ public class PromptCreadoResponse
     public string? Descripcion { get; set; }
 
     [JsonPropertyName("fecha_publicacion")]
+    [JsonConverter(typeof(Rfc2822DateTimeConverter))]
     public DateTime FechaPublicacion { get; set; }
 
     [JsonPropertyName("categoria_label")]
@@ -83,6 +101,7 @@ public class PromptGuardadoResponse
     public string? Descripcion { get; set; }
 
     [JsonPropertyName("fecha_publicacion")]
+    [JsonConverter(typeof(Rfc2822DateTimeConverter))]
     public DateTime FechaPublicacion { get; set; }
 
     [JsonPropertyName("autor_id")]

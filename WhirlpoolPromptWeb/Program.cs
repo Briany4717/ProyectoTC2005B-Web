@@ -29,6 +29,8 @@ builder.Services.AddHttpClient<ICreatePromptService, CreatePromptService>()
                 HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         });
 
+builder.Services.AddScoped<IShopService, ShopService>();
+
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 {
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
