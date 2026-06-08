@@ -4,6 +4,9 @@
 @{
     ViewData["Title"] = "Tienda";
     var productsJson = JsonSerializer.Serialize(Model.Products);
+    var purchaseResultJson = Model.LastPurchaseResult != null
+        ? JsonSerializer.Serialize(Model.LastPurchaseResult)
+        : "null";
 }
 
 <main class="col-8 mx-auto">
@@ -16,6 +19,13 @@
         @foreach (var product in Model.Products)
         {
             <div class="shop-card card" onclick="openProductPanel(@product.Id)">
+                @if (!product.IsOwned)
+                {
+                    <span class="shop-coins-badge">
+                        <img src="~/images/moneda-nueva.png" alt="monedas" />
+                        @product.Cost
+                    </span>
+                }
                 <div class="shop-card-img-wrap">
                     <img src="@product.ImageUrl" alt="@product.Name" class="shop-card-img" />
                 </div>
@@ -23,14 +33,19 @@
                     <h3 class="shop-card-title">@product.Name</h3>
                     <p class="shop-card-desc text-muted mb-3">@product.Description</p>
                     <div class="d-flex align-items-center justify-content-between mt-auto">
-                        <span class="shop-coins-badge">
-                            <img src="~/images/moneda-nueva.png" alt="monedas" />
-                            @product.Cost
-                        </span>
-                        <button class="btn btn-whirlpool btn-sm"
-                                onclick="event.stopPropagation(); openProductPanel(@product.Id)">
-                            Ver detalles
-                        </button>
+                        @if (!product.IsOwned)
+                        {
+                            <button class="btn btn-whirlpool btn-sm ms-auto"
+                                    onclick="event.stopPropagation(); openProductPanel(@product.Id)">
+                                Ver detalles
+                            </button>
+                        }
+                        else
+                        {
+                            <span>
+                                Ya comprado
+                            </span>
+                        }
                     </div>
                 </div>
             </div>
@@ -46,21 +61,24 @@
                 <h5 class="modal-title fw-semibold" id="productModalLabel">Detalle del producto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body d-flex flex-column gap-3">
-                <img id="offcanvasImg" src="" alt="" class="shop-offcanvas-img rounded" />
-                <h2 id="offcanvasName" class="mb-0"></h2>
-                <p id="offcanvasDesc" class="text-muted mb-0"></p>
-                <div class="d-flex align-items-center gap-2">
-                    <img src="~/images/moneda-nueva.png" alt="monedas" style="height:22px;width:22px;" />
-                    <span id="offcanvasCost" class="fs-5 fw-bold"></span>
-                    <span class="text-muted">monedas</span>
+            <form method="post" action="/Shop/Purchase">
+                <div class="modal-body d-flex gap-3">
+                    <input type="hidden" name="productId" id="hiddenProductId" value="" />
+                    <img id="offcanvasImg" src="" alt="" class="shop-offcanvas-img" />
+                    <div class="d-flex flex-column py-3 pe-4 ps-3">
+                        <h2 id="offcanvasName" class="mb-0"></h2>
+                        <p id="offcanvasDesc" class="text-muted mb-0"></p>
+                        <div class="d-flex align-items-center gap-2 mt-auto mb-3">
+                            <img src="~/images/moneda-nueva.png" alt="monedas" style="height:22px;width:22px;" />
+                            <span id="offcanvasCost" class="fs-5 fw-bold"></span>
+                            <span class="text-muted">monedas</span>
+                        </div>
+                        <button id="btnComprar" type="submit" class="btn btn-whirlpool w-100">
+                            Comprar
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer border-0 justify-content-end pb-4 px-4">
-                <button id="btnComprar" class="btn btn-whirlpool w-100" onclick="comprarProducto()">
-                    Comprar
-                </button>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -86,14 +104,13 @@
 @section Scripts {
     <script>
         const _products = @Html.Raw(productsJson);
-        let _activeProductId = null;
-        let _lastResult = null;
+        const _purchaseResult = @Html.Raw(purchaseResultJson);
 
         function openProductPanel(productId) {
             const p = _products.find(x => x.Id === productId);
             if (!p) return;
 
-            _activeProductId = productId;
+            document.getElementById('hiddenProductId').value = productId;
             document.getElementById('offcanvasImg').src = p.ImageUrl;
             document.getElementById('offcanvasImg').alt = p.Name;
             document.getElementById('offcanvasName').textContent = p.Name;
@@ -107,32 +124,6 @@
             bootstrap.Modal.getOrCreateInstance(
                 document.getElementById('productModal')
             ).show();
-        }
-
-        async function comprarProducto() {
-            if (!_activeProductId) return;
-
-            const btn = document.getElementById('btnComprar');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Procesando...';
-
-            try {
-                const res = await fetch('/Shop/Purchase', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `productId=${_activeProductId}`
-                });
-
-                _lastResult = await res.json();
-            } catch {
-                _lastResult = { Success: false, Message: 'Error de conexión. Intenta de nuevo.', NewCoinBalance: null };
-            }
-
-            bootstrap.Modal.getInstance(
-                document.getElementById('productModal')
-            )?.hide();
-
-            showTransactionModal(_lastResult);
         }
 
         function showTransactionModal(result) {
@@ -152,19 +143,13 @@
 
             msg.textContent = result.Message;
 
-            const modal = bootstrap.Modal.getOrCreateInstance(
+            bootstrap.Modal.getOrCreateInstance(
                 document.getElementById('transactionModal')
-            );
-            modal.show();
+            ).show();
         }
 
-        document.getElementById('btnDismiss').addEventListener('click', function () {
-            if (_lastResult?.Success && _lastResult.NewCoinBalance != null) {
-                const coinsSpan = document.querySelector('.coins-cont span');
-                if (coinsSpan) coinsSpan.textContent = _lastResult.NewCoinBalance;
-            }
-            _lastResult = null;
-            _activeProductId = null;
-        });
+        if (_purchaseResult) {
+            showTransactionModal(_purchaseResult);
+        }
     </script>
 }

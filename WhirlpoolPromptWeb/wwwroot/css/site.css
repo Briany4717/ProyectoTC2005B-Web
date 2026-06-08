@@ -605,8 +605,19 @@ html:has(.login-page) {
   color: gray !important;
 }
 
+/* –– Modal styles overwritten ––*/
+
+.modal-dialog {
+  max-width: 50dvw !important;
+}
+
 .modal-body {
-  padding: 1rem 3rem;
+  padding: 0rem;
+  height: 40lvh;
+}
+
+.modal-content {
+  overflow: hidden;
 }
 
 .modal-content .text-muted {
@@ -614,15 +625,16 @@ html:has(.login-page) {
 }
 
 .shop-coins-badge {
-  display: inline-flex;
+  position: absolute;
   align-items: center;
   gap: 0.35rem;
   background-color: var(--bs-primary-color);
-  padding: 0.2rem 0.65rem 0.2rem 0.45rem;
-  border-radius: 3rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0 0 1rem 0;
   font-weight: 700;
   font-size: 0.95rem;
   color: var(--bs-primary-foreground);
+  box-shadow: 0 0 25px black;
 }
 
 .shop-coins-badge img {
@@ -631,8 +643,8 @@ html:has(.login-page) {
 }
 
 .shop-offcanvas-img {
-  width: 100%;
-  height: 240px;
+  max-width: 50%;
+  height: 100%;
   object-fit: cover;
 }
 

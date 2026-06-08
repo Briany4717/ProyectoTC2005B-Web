@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using WhirlpoolPromptWeb.Filters;
 using WhirlpoolPromptWeb.Models;
 using WhirlpoolPromptWeb.Services;
@@ -27,7 +28,11 @@ public class ShopController : Controller
 
         int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
         var products = await _shopService.GetProductsAsync(userId);
+
         var viewModel = new ShopViewModel { Products = products };
+
+        if (TempData["PurchaseResult"] is string json)
+            viewModel.LastPurchaseResult = JsonSerializer.Deserialize<PurchaseResult>(json);
 
         return View(viewModel);
     }
@@ -38,14 +43,19 @@ public class ShopController : Controller
         var userId = HttpContext.Session.GetInt32("UserId");
         var coins = HttpContext.Session.GetInt32("Coins");
 
+        PurchaseResult result;
         if (userId == null || coins == null)
-            return Json(new PurchaseResult { Success = false, Message = "Sesión no válida.", NewCoinBalance = 0 });
+        {
+            result = new PurchaseResult { Success = false, Message = "Sesión no válida.", NewCoinBalance = 0 };
+        }
+        else
+        {
+            result = await _shopService.PurchaseProductAsync(productId, userId.Value, coins.Value);
+            if (result.Success)
+                HttpContext.Session.SetInt32("Coins", result.NewCoinBalance);
+        }
 
-        var result = await _shopService.PurchaseProductAsync(productId, userId.Value, coins.Value);
-
-        if (result.Success)
-            HttpContext.Session.SetInt32("Coins", result.NewCoinBalance);
-
-        return Json(result);
+        TempData["PurchaseResult"] = JsonSerializer.Serialize(result);
+        return RedirectToAction("Shop");
     }
 }
