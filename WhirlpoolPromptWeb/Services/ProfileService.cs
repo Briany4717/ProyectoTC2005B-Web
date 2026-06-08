@@ -6,7 +6,7 @@ namespace WhirlpoolPromptWeb.Services;
 public class ProfileService : IProfileService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _baseUrl = "http://127.0.0.1:8000";
+    private readonly string _baseUrl = "https://127.0.0.1:8000";
 
     public ProfileService(HttpClient httpClient)
     {
