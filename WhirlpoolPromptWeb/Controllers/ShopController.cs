@@ -25,7 +25,8 @@ public class ShopController : Controller
     {
         SetNavbarData();
 
-        var products = await _shopService.GetProductsAsync();
+        int userId = HttpContext.Session.GetInt32("UserId") ?? 0;
+        var products = await _shopService.GetProductsAsync(userId);
         var viewModel = new ShopViewModel { Products = products };
 
         return View(viewModel);

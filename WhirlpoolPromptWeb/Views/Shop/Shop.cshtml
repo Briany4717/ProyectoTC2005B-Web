@@ -6,8 +6,8 @@
     var productsJson = JsonSerializer.Serialize(Model.Products);
 }
 
-<main class="col-10 mx-auto">
-    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between mb-2 gap-2">
+<main class="col-8 mx-auto">
+    <div class="d-flex flex-column mb-2 gap-2">
         <h1 class="mb-0">Tienda</h1>
         <span class="lb-subtitle mb-0">Usa tus monedas para canjear productos exclusivos</span>
     </div>
@@ -38,43 +38,44 @@
     </div>
 </main>
 
-<!-- Offcanvas: detalle del producto -->
-<div class="offcanvas offcanvas-end shop-offcanvas" tabindex="-1" id="productOffcanvas"
-     aria-labelledby="productOffcanvasLabel">
-    <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title fw-semibold" id="productOffcanvasLabel">Detalle del producto</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
-    </div>
-    <div class="offcanvas-body d-flex flex-column gap-3">
-        <img id="offcanvasImg" src="" alt=""
-             class="shop-offcanvas-img rounded" />
-        <h2 id="offcanvasName" class="mb-0"></h2>
-        <p id="offcanvasDesc" class="text-muted mb-0"></p>
-        <div class="d-flex align-items-center gap-2">
-            <img src="~/images/moneda-nueva.png" alt="monedas" style="height:22px;width:22px;" />
-            <span id="offcanvasCost" class="fs-5 fw-bold"></span>
-            <span class="text-muted">monedas</span>
+<!-- Modal: detalle del producto -->
+<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-semibold" id="productModalLabel">Detalle del producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body d-flex flex-column gap-3">
+                <img id="offcanvasImg" src="" alt="" class="shop-offcanvas-img rounded" />
+                <h2 id="offcanvasName" class="mb-0"></h2>
+                <p id="offcanvasDesc" class="text-muted mb-0"></p>
+                <div class="d-flex align-items-center gap-2">
+                    <img src="~/images/moneda-nueva.png" alt="monedas" style="height:22px;width:22px;" />
+                    <span id="offcanvasCost" class="fs-5 fw-bold"></span>
+                    <span class="text-muted">monedas</span>
+                </div>
+            </div>
+            <div class="modal-footer border-0 justify-content-end pb-4 px-4">
+                <button id="btnComprar" class="btn btn-whirlpool w-100" onclick="comprarProducto()">
+                    Comprar
+                </button>
+            </div>
         </div>
-        <button id="btnComprar" class="btn btn-whirlpool w-100 mt-auto" onclick="comprarProducto()">
-            Comprar
-        </button>
     </div>
 </div>
 
 <!-- Modal: resultado de la transacción -->
-<div class="modal fade" id="transactionModal" tabindex="-1"
-     aria-labelledby="transactionModalLabel" aria-hidden="true">
+<div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center py-4 px-4">
-                <span class="material-symbols-rounded shop-transaction-icon mb-3"
-                      id="transactionIcon"></span>
+                <span class="material-symbols-rounded shop-transaction-icon mb-3" id="transactionIcon"></span>
                 <h5 class="fw-semibold mb-2" id="transactionTitle"></h5>
                 <p id="transactionMessage" class="text-muted mb-0"></p>
             </div>
             <div class="modal-footer border-0 justify-content-center pb-4">
-                <button type="button" class="btn btn-whirlpool px-5"
-                        data-bs-dismiss="modal" id="btnDismiss">
+                <button type="button" class="btn btn-whirlpool px-5" data-bs-dismiss="modal" id="btnDismiss">
                     Aceptar
                 </button>
             </div>
@@ -83,87 +84,87 @@
 </div>
 
 @section Scripts {
-<script>
-    const _products = @Html.Raw(productsJson);
-    let _activeProductId = null;
-    let _lastResult = null;
+    <script>
+        const _products = @Html.Raw(productsJson);
+        let _activeProductId = null;
+        let _lastResult = null;
 
-    function openProductPanel(productId) {
-        const p = _products.find(x => x.Id === productId);
-        if (!p) return;
+        function openProductPanel(productId) {
+            const p = _products.find(x => x.Id === productId);
+            if (!p) return;
 
-        _activeProductId = productId;
-        document.getElementById('offcanvasImg').src = p.ImageUrl;
-        document.getElementById('offcanvasImg').alt = p.Name;
-        document.getElementById('offcanvasName').textContent = p.Name;
-        document.getElementById('offcanvasDesc').textContent = p.Description;
-        document.getElementById('offcanvasCost').textContent = p.Cost;
+            _activeProductId = productId;
+            document.getElementById('offcanvasImg').src = p.ImageUrl;
+            document.getElementById('offcanvasImg').alt = p.Name;
+            document.getElementById('offcanvasName').textContent = p.Name;
+            document.getElementById('offcanvasDesc').textContent = p.Description;
+            document.getElementById('offcanvasCost').textContent = p.Cost;
 
-        const btn = document.getElementById('btnComprar');
-        btn.disabled = false;
-        btn.textContent = 'Comprar';
+            const btn = document.getElementById('btnComprar');
+            btn.disabled = p.IsOwned;
+            btn.textContent = p.IsOwned ? 'Ya comprado' : 'Comprar';
 
-        bootstrap.Offcanvas.getOrCreateInstance(
-            document.getElementById('productOffcanvas')
-        ).show();
-    }
-
-    async function comprarProducto() {
-        if (!_activeProductId) return;
-
-        const btn = document.getElementById('btnComprar');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Procesando...';
-
-        try {
-            const res = await fetch('/Shop/Purchase', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `productId=${_activeProductId}`
-            });
-
-            _lastResult = await res.json();
-        } catch {
-            _lastResult = { Success: false, Message: 'Error de conexión. Intenta de nuevo.', NewCoinBalance: null };
+            bootstrap.Modal.getOrCreateInstance(
+                document.getElementById('productModal')
+            ).show();
         }
 
-        bootstrap.Offcanvas.getInstance(
-            document.getElementById('productOffcanvas')
-        )?.hide();
+        async function comprarProducto() {
+            if (!_activeProductId) return;
 
-        showTransactionModal(_lastResult);
-    }
+            const btn = document.getElementById('btnComprar');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Procesando...';
 
-    function showTransactionModal(result) {
-        const icon = document.getElementById('transactionIcon');
-        const title = document.getElementById('transactionTitle');
-        const msg = document.getElementById('transactionMessage');
+            try {
+                const res = await fetch('/Shop/Purchase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `productId=${_activeProductId}`
+                });
 
-        if (result.Success) {
-            icon.textContent = 'check_circle';
-            icon.style.color = '#1f7a4c';
-            title.textContent = 'Transacción exitosa';
-        } else {
-            icon.textContent = 'cancel';
-            icon.style.color = '#9b1c1c';
-            title.textContent = 'Transacción fallida';
+                _lastResult = await res.json();
+            } catch {
+                _lastResult = { Success: false, Message: 'Error de conexión. Intenta de nuevo.', NewCoinBalance: null };
+            }
+
+            bootstrap.Modal.getInstance(
+                document.getElementById('productModal')
+            )?.hide();
+
+            showTransactionModal(_lastResult);
         }
 
-        msg.textContent = result.Message;
+        function showTransactionModal(result) {
+            const icon = document.getElementById('transactionIcon');
+            const title = document.getElementById('transactionTitle');
+            const msg = document.getElementById('transactionMessage');
 
-        const modal = bootstrap.Modal.getOrCreateInstance(
-            document.getElementById('transactionModal')
-        );
-        modal.show();
-    }
+            if (result.Success) {
+                icon.textContent = 'check_circle';
+                icon.style.color = '#1f7a4c';
+                title.textContent = 'Transacción exitosa';
+            } else {
+                icon.textContent = 'cancel';
+                icon.style.color = '#9b1c1c';
+                title.textContent = 'Transacción fallida';
+            }
 
-    document.getElementById('btnDismiss').addEventListener('click', function () {
-        if (_lastResult?.Success && _lastResult.NewCoinBalance != null) {
-            const coinsSpan = document.querySelector('.coins-cont span');
-            if (coinsSpan) coinsSpan.textContent = _lastResult.NewCoinBalance;
+            msg.textContent = result.Message;
+
+            const modal = bootstrap.Modal.getOrCreateInstance(
+                document.getElementById('transactionModal')
+            );
+            modal.show();
         }
-        _lastResult = null;
-        _activeProductId = null;
-    });
-</script>
+
+        document.getElementById('btnDismiss').addEventListener('click', function () {
+            if (_lastResult?.Success && _lastResult.NewCoinBalance != null) {
+                const coinsSpan = document.querySelector('.coins-cont span');
+                if (coinsSpan) coinsSpan.textContent = _lastResult.NewCoinBalance;
+            }
+            _lastResult = null;
+            _activeProductId = null;
+        });
+    </script>
 }

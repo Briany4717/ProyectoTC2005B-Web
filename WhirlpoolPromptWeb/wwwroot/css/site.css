@@ -498,14 +498,6 @@ html:has(.login-page) {
   }
 }
 
-
-
-
-
-
-
-
-
 .toast-success {
   position: fixed;
   top: 80px;
@@ -524,7 +516,9 @@ html:has(.login-page) {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1050;
   opacity: 0;
-  transition: transform 0.35s ease, opacity 0.35s ease;
+  transition:
+    transform 0.35s ease,
+    opacity 0.35s ease;
   max-width: 90vw;
   white-space: nowrap;
 }
@@ -570,7 +564,9 @@ html:has(.login-page) {
   overflow: hidden;
   cursor: pointer;
   border: 1px solid #e8e8e8;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .shop-card:hover {
@@ -606,6 +602,15 @@ html:has(.login-page) {
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  color: gray !important;
+}
+
+.modal-body {
+  padding: 1rem 3rem;
+}
+
+.modal-content .text-muted {
+  color: gray !important;
 }
 
 .shop-coins-badge {
@@ -623,10 +628,6 @@ html:has(.login-page) {
 .shop-coins-badge img {
   height: 18px;
   width: 18px;
-}
-
-.shop-offcanvas {
-  width: 420px !important;
 }
 
 .shop-offcanvas-img {

@@ -1,95 +1,84 @@
 using WhirlpoolPromptWeb.Models;
+using System.Text.Json;
 
 namespace WhirlpoolPromptWeb.Services;
 
 public class ShopService : IShopService
 {
-    private static readonly List<Product> _catalog = new()
-    {
-        new Product
-        {
-            Id = 1,
-            Name = "Avatar: Princesa Peach",
-            Cost = 80,
-            ImageUrl = "https://picsum.photos/seed/shop1/600/400",
-            Description = "Desbloquea el avatar exclusivo de la Princesa Peach para tu perfil. Destaca en el ranking y muestra tu personalidad única ante la comunidad."
-        },
-        new Product
-        {
-            Id = 2,
-            Name = "Boost de Visibilidad",
-            Cost = 50,
-            ImageUrl = "https://picsum.photos/seed/shop2/600/400",
-            Description = "Coloca uno de tus prompts en la sección destacada durante 24 horas. Aumenta tus likes y llega a más usuarios de la plataforma."
-        },
-        new Product
-        {
-            Id = 3,
-            Name = "Pack Premium: IA & Negocios",
-            Cost = 120,
-            ImageUrl = "https://picsum.photos/seed/shop3/600/400",
-            Description = "Accede a una colección curada de 15 prompts premium para casos de uso empresarial: reuniones, correos, estrategia y más."
-        },
-        new Product
-        {
-            Id = 4,
-            Name = "Badge: Experto Verificado",
-            Cost = 200,
-            ImageUrl = "https://picsum.photos/seed/shop4/600/400",
-            Description = "Obtén la insignia de Experto Verificado en tu perfil. Un reconocimiento permanente que señala la calidad de tus contribuciones a la comunidad."
-        },
-        new Product
-        {
-            Id = 5,
-            Name = "Categoría Exclusiva: Arte",
-            Cost = 75,
-            ImageUrl = "https://picsum.photos/seed/shop5/600/400",
-            Description = "Desbloquea la categoría 'Arte & Creatividad' y accede a prompts especializados en diseño gráfico, música, escritura creativa y más."
-        },
-        new Product
-        {
-            Id = 6,
-            Name = "Pack del Mes: Productividad",
-            Cost = 90,
-            ImageUrl = "https://picsum.photos/seed/shop6/600/400",
-            Description = "El pack curado de este mes incluye los 10 prompts más valorados de la categoría Productividad. Selección especial por el equipo editorial."
-        },
-    };
+    private readonly HttpClient _httpClient;
+    private readonly string _baseUrl = "https://127.0.0.1:6747";
 
-    public Task<List<Product>> GetProductsAsync()
+    public ShopService(HttpClient httpClient)
     {
-        // Simula latencia de red
-        return Task.FromResult(_catalog.ToList());
+        _httpClient = httpClient;
+    }
+
+    public async Task<List<Product>> GetProductsAsync(int userId)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"{_baseUrl}/usuarios/{userId}/canciones/compras");
+            if (!response.IsSuccessStatusCode) return new List<Product>();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var items = JsonSerializer.Deserialize<List<CancionApiResponse>>(json) ?? new List<CancionApiResponse>();
+
+            return items.Select(c => new Product
+            {
+                Id = c.IdCancion,
+                Name = c.NombreCancion,
+                Description = c.Descripcion,
+                Cost = c.Costo,
+                ImageUrl = c.UrlImagen,
+                IsOwned = c.Comprada > 0
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"GetProductsAsync error: {ex.Message}");
+            return new List<Product>();
+        }
     }
 
     public async Task<PurchaseResult> PurchaseProductAsync(int productId, int userId, int currentCoins)
     {
-        // Simula latencia de API
-        await Task.Delay(400);
-
-        var product = _catalog.FirstOrDefault(p => p.Id == productId);
-
-        if (product == null)
-            return new PurchaseResult
-            {
-                Success = false,
-                Message = "El producto no existe.",
-                NewCoinBalance = currentCoins
-            };
-
-        if (currentCoins < product.Cost)
-            return new PurchaseResult
-            {
-                Success = false,
-                Message = $"Monedas insuficientes. Necesitas {product.Cost - currentCoins} monedas más.",
-                NewCoinBalance = currentCoins
-            };
-
-        return new PurchaseResult
+        try
         {
-            Success = true,
-            Message = $"¡Compra exitosa! Ahora tienes acceso a \"{product.Name}\".",
-            NewCoinBalance = currentCoins - product.Cost
-        };
+            var response = await _httpClient.PostAsync(
+                $"{_baseUrl}/usuarios/{userId}/canciones/{productId}/comprar", null);
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new PurchaseResult
+                {
+                    Success = false,
+                    Message = "No fue posible completar la compra. Intenta de nuevo.",
+                    NewCoinBalance = currentCoins
+                };
+            }
+
+            var products = await GetProductsAsync(userId);
+            var product = products.FirstOrDefault(p => p.Id == productId);
+            int newBalance = currentCoins - (product?.Cost ?? 0);
+
+            return new PurchaseResult
+            {
+                Success = true,
+                Message = $"¡Compra exitosa! Ahora tienes acceso a \"{product?.Name ?? "producto"}\".",
+                NewCoinBalance = newBalance
+            };
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"PurchaseProductAsync error: {ex.Message}");
+            return new PurchaseResult
+            {
+                Success = false,
+                Message = "Error de conexión. Intenta de nuevo.",
+                NewCoinBalance = currentCoins
+            };
+        }
     }
 }
