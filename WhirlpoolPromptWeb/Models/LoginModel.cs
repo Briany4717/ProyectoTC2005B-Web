@@ -9,6 +9,7 @@ namespace WhirlpoolPromptWeb.Models
         [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
         [EmailAddress(ErrorMessage = "El correo electrónico no tiene un formato válido.")]
         [MaxLength(100, ErrorMessage = "El correo electrónico no puede exceder {1} caracteres.")]
+        [MinLength(1, ErrorMessage = "El correo electrónico debe tener al menos {1} caracteres.")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "La contraseña es obligatoria")]

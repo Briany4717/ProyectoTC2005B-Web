@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using WhirlpoolPromptWeb.Filters;
 
 namespace WhirlpoolPromptWeb.Models
 {
@@ -7,6 +8,7 @@ namespace WhirlpoolPromptWeb.Models
         [Required(ErrorMessage = "El título es obligatorio.")]
         [MinLength(5, ErrorMessage = "El título debe tener al menos {1} caracteres.")]
         [MaxLength(100, ErrorMessage = "El título no puede exceder {1} caracteres.")]
+        [NoBannedWords(ErrorMessage = "El título contiene lenguaje no permitido.")]
         [Display(Name = "Título")]
         public string Title { get; set; }
 
@@ -17,6 +19,7 @@ namespace WhirlpoolPromptWeb.Models
         [Required(ErrorMessage = "El contenido del prompt es obligatorio.")]
         [MinLength(20, ErrorMessage = "El prompt debe tener al menos {1} caracteres.")]
         [MaxLength(2000, ErrorMessage = "El prompt no puede exceder {1} caracteres.")]
+        [NoBannedWords(ErrorMessage = "El prompt contiene lenguaje no permitido.")]
         [Display(Name = "Prompt")]
         public string Content { get; set; }
     }
