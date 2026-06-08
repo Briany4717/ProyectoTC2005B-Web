@@ -90,6 +90,6 @@ public class CreatePromptController : Controller
 
         TempData["SuccessMessage"] = $"¡Prompt publicado correctamente! Has ganado {CoinsReward} monedas.";
 
-        return RedirectToAction("Library", "Home");
+        return RedirectToAction("Index", "Library");
     }
 }

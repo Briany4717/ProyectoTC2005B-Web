@@ -7,24 +7,24 @@
 <main class="col-8 mx-auto">
     <h1 class="mb-4">Biblioteca de Prompts</h1>
 
-    <form method="get" action="/Home/Library" class="d-flex flex-wrap gap-2 my-3">
+    <form method="get" asp-controller="Library" asp-action="Index" class="d-flex flex-wrap gap-2 my-3">
         <div class="search-bar">
             <span class="material-symbols-rounded">search</span>
-
             <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Buscar prompts..." />
 
             <select name="category" class="form-select w-auto border-top-0 border-bottom-0 rounded-0">
                 <option value="" selected="@(string.IsNullOrEmpty(Model.SelectedCategory) ? "selected" : null)">Todas
                     las categorías</option>
-                    <option value="Código" selected="@(Model.SelectedCategory == "Código"    ? "selected" : null)">Código
-                    </option>
-                    <option value="Educación" selected="@(Model.SelectedCategory == "Educación" ? "selected" : null)">
-                        Educación</option>
-                        <option value="Diseño" selected="@(Model.SelectedCategory == "Diseño"    ? "selected" : null)">Diseño
+                @if (Model.Categories != null)
+                {
+                    foreach (var cat in Model.Categories)
+                    {
+                        <option value="@cat" selected="@(Model.SelectedCategory == cat ? "selected" : null)">
+                            @cat
                         </option>
-                        <option value="Marketing" selected="@(Model.SelectedCategory == "Marketing" ? "selected" : null)">
-                            Marketing</option>
-                        </select>
+                    }
+                }
+            </select>
 
                         <select name="sortOrder" class="form-select w-auto border-top-0 border-bottom-0 rounded-0">
                             <option value="date" selected="@(Model.SortOrder == "date"       ? "selected" : null)">Más recientes
@@ -64,12 +64,12 @@
 
                                 <div class="d-flex justify-content-end align-items-center mt-auto">
                                     <div class="d-flex text-muted gap-3">
-                                        <a href="/Home/Comments?promptId=@prompt.Id"
+                                        <a asp-controller="Library" asp-action="Comments" asp-route-promptId="@prompt.Id"
                                                class="d-flex align-items-center gap-1 text-muted text-decoration-none">
                                             <span class="material-symbols-rounded" style="font-size: 18px;">chat_bubble</span>
                                             @(prompt.Comments?.Length ?? 0)
                                         </a>
-                                        <form method="post" action="/Home/ToggleLikeLibrary" class="d-flex align-items-center">
+                                        <form method="post" asp-controller="Library" asp-action="ToggleLike" class="d-flex align-items-center">
                                             <input type="hidden" name="promptId" value="@prompt.Id" />
                                             <input type="hidden" name="searchTerm" value="@Model.SearchTerm" />
                                             <input type="hidden" name="category" value="@Model.SelectedCategory" />
@@ -92,7 +92,11 @@
                         @if (Model.HasPreviousPage)
                         {
                             <a class="btn btn-outline-secondary"
-                               href="/Home/Library?searchTerm=@Model.SearchTerm&category=@Model.SelectedCategory&sortOrder=@Model.SortOrder&page=@(Model.CurrentPage - 1)">Anterior</a>
+                               asp-controller="Library" asp-action="Index"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-category="@Model.SelectedCategory"
+                               asp-route-sortOrder="@Model.SortOrder"
+                               asp-route-page="@(Model.CurrentPage - 1)">Anterior</a>
                         }
                         else
                         {
@@ -104,7 +108,11 @@
                         @if (Model.HasNextPage)
                         {
                             <a class="btn btn-outline-secondary"
-                               href="/Home/Library?searchTerm=@Model.SearchTerm&category=@Model.SelectedCategory&sortOrder=@Model.SortOrder&page=@(Model.CurrentPage + 1)">Siguiente</a>
+                               asp-controller="Library" asp-action="Index"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-category="@Model.SelectedCategory"
+                               asp-route-sortOrder="@Model.SortOrder"
+                               asp-route-page="@(Model.CurrentPage + 1)">Siguiente</a>
                         }
                         else
                         {

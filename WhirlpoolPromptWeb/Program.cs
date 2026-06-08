@@ -21,6 +21,14 @@ new HttpClientHandler
 HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 
+builder.Services.AddHttpClient<ILibraryServices, LibraryServices>()
+.ConfigurePrimaryHttpMessageHandler(() =>
+new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback =
+HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+});
+
 builder.Services.AddHttpClient<ICreatePromptService, CreatePromptService>()
     .ConfigurePrimaryHttpMessageHandler(() =>
         new HttpClientHandler
