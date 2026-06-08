@@ -55,8 +55,8 @@ public class CreatePromptController : Controller
         }
 
         int authorId = HttpContext.Session.GetInt32("UserId") ?? 0;
-        int newId = HomeController._prompts.Count > 0
-            ? HomeController._prompts.Max(p => p.Id) + 1
+        int newId = LibraryController._prompts.Count > 0
+            ? LibraryController._prompts.Max(p => p.Id) + 1
             : 1;
 
         var newPrompt = new Prompt
@@ -72,13 +72,13 @@ public class CreatePromptController : Controller
             Comments = new int[0]
         };
 
-        HomeController._prompts.Add(newPrompt);
+        LibraryController._prompts.Add(newPrompt);
 
         int currentCoins = HttpContext.Session.GetInt32("Coins") ?? 0;
         HttpContext.Session.SetInt32("Coins", currentCoins + CoinsReward);
 
         TempData["SuccessMessage"] = $"¡Prompt publicado correctamente! Has ganado {CoinsReward} monedas.";
 
-        return RedirectToAction("Library", "Home");
+        return RedirectToAction("Index", "Library");
     }
 }
