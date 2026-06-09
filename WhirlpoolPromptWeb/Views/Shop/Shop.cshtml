@@ -64,7 +64,13 @@
             <form method="post" action="/Shop/Purchase">
                 <div class="modal-body d-flex gap-3">
                     <input type="hidden" name="productId" id="hiddenProductId" value="" />
-                    <img id="offcanvasImg" src="" alt="" class="shop-offcanvas-img" />
+                    <div class="shop-img-player-wrap">
+                        <img id="offcanvasImg" src="" alt="" class="shop-offcanvas-img" />
+                        <button type="button" id="btnPlay" class="shop-play-btn" onclick="togglePlay()">
+                            <span class="material-symbols-rounded" id="playIcon">play_circle</span>
+                        </button>
+                    </div>
+                    <audio id="songAudio" preload="none"></audio>
                     <div class="d-flex flex-column py-3 pe-4 ps-3">
                         <h2 id="offcanvasName" class="mb-0"></h2>
                         <p id="offcanvasDesc" class="text-muted mb-0"></p>
@@ -117,6 +123,12 @@
             document.getElementById('offcanvasDesc').textContent = p.Description;
             document.getElementById('offcanvasCost').textContent = p.Cost;
 
+            const audio = document.getElementById('songAudio');
+            audio.pause();
+            audio.src = `/sounds/song-${productId}.mp3`;
+            audio.currentTime = 0;
+            document.getElementById('playIcon').textContent = 'play_circle';
+
             const btn = document.getElementById('btnComprar');
             btn.disabled = p.IsOwned;
             btn.textContent = p.IsOwned ? 'Ya comprado' : 'Comprar';
@@ -125,6 +137,25 @@
                 document.getElementById('productModal')
             ).show();
         }
+
+        function togglePlay() {
+            const audio = document.getElementById('songAudio');
+            const icon = document.getElementById('playIcon');
+            if (audio.paused) {
+                audio.play();
+                icon.textContent = 'pause_circle';
+            } else {
+                audio.pause();
+                icon.textContent = 'play_circle';
+            }
+        }
+
+        document.getElementById('productModal').addEventListener('hidden.bs.modal', function () {
+            const audio = document.getElementById('songAudio');
+            audio.pause();
+            audio.currentTime = 0;
+            document.getElementById('playIcon').textContent = 'play_circle';
+        });
 
         function showTransactionModal(result) {
             const icon = document.getElementById('transactionIcon');
