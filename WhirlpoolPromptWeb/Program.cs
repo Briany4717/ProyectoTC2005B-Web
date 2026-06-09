@@ -37,6 +37,14 @@ builder.Services.AddHttpClient<ICreatePromptService, CreatePromptService>()
                 HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         });
 
+builder.Services.AddHttpClient<IShopService, ShopService>()
+    .ConfigurePrimaryHttpMessageHandler(() =>
+        new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        });
+
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 {
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;

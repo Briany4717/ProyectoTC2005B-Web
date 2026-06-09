@@ -14,7 +14,7 @@ public class AuthenticatorService : IAuthenticatorService
 
     public async Task<List<UserSession>> AuthenticateUserAPI(string email, string password)
     {
-        var url = "https://127.0.0.1:5000/authenticate";
+        var url = "https://10.14.255.43:6747/authenticate";
 
         var payload = new
         {

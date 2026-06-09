@@ -6,7 +6,7 @@ namespace WhirlpoolPromptWeb.Services;
 public class CreatePromptService : ICreatePromptService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _baseUrl = "https://127.0.0.1:5000";
+    private readonly string _baseUrl = "https://10.14.255.43:6747";
 
     public CreatePromptService(HttpClient httpClient)
     {
@@ -19,13 +19,13 @@ public class CreatePromptService : ICreatePromptService
         {
             var payload = new
             {
-                titulo       = titulo,
-                contenido    = contenido,
+                titulo = titulo,
+                contenido = contenido,
                 id_categoria = idCategoria,
-                id_usuario   = idUsuario
+                id_usuario = idUsuario
             };
 
-            var json    = JsonSerializer.Serialize(payload);
+            var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync($"{_baseUrl}/insertarPrompt", content);
