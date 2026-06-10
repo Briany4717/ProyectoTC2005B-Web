@@ -882,3 +882,134 @@ html:has(.login-page) {
   display: block;
   font-size: 4rem;
 }
+
+.game-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 75vh;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.game-header-title {
+  font-family: "Inter", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #080707;
+  text-align: center;
+}
+
+.game-subtitle {
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  color: #3a3f43;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+#unity-container {
+  position: relative;
+  width: 960px;
+  max-width: 100%;
+  aspect-ratio: 960 / 520;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+#unity-canvas {
+  width: 100%;
+  height: 100%;
+  background: #111;
+  display: block;
+}
+
+#unity-loading-bar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  text-align: center;
+  width: 320px;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.unity-loading-text {
+  font-family: "Inter", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+#unity-progress-bar-empty {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+#unity-progress-bar-full {
+  width: 0%;
+  height: 100%;
+  background: #4a919e;
+  border-radius: 4px;
+  transition: width 0.1s ease;
+}
+
+#unity-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 960px;
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.unity-title {
+  font-family: "Inter", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-fullscreen {
+  background-color: #4a919e;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Inter", sans-serif;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+.btn-fullscreen:hover {
+  background-color: #166f6f;
+  transform: translateY(-1px);
+}
+
+.btn-fullscreen:active {
+  transform: translateY(1px);
+}
