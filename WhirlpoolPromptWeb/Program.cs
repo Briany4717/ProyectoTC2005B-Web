@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.StaticFiles;
 using WhirlpoolPromptWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,14 @@ new HttpClientHandler
 HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
 });
 
+builder.Services.AddHttpClient<ILibraryServices, LibraryServices>()
+.ConfigurePrimaryHttpMessageHandler(() =>
+new HttpClientHandler
+{
+    ServerCertificateCustomValidationCallback =
+HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+});
+
 builder.Services.AddHttpClient<ICreatePromptService, CreatePromptService>()
     .ConfigurePrimaryHttpMessageHandler(() =>
         new HttpClientHandler
@@ -30,6 +39,14 @@ builder.Services.AddHttpClient<ICreatePromptService, CreatePromptService>()
         });
 
 builder.Services.AddHttpClient<IShopService, ShopService>()
+    .ConfigurePrimaryHttpMessageHandler(() =>
+        new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        });
+
+builder.Services.AddHttpClient<ILeaderboardService, LeaderboardService>()
     .ConfigurePrimaryHttpMessageHandler(() =>
         new HttpClientHandler
         {
@@ -68,6 +85,15 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.UseSession();
+
+var provider = new FileExtensionContentTypeProvider();
+provider.Mappings[".data"] = "application/octet-stream";
+provider.Mappings[".wasm"] = "application/wasm";
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = provider
+});
 
 app.MapStaticAssets();
 

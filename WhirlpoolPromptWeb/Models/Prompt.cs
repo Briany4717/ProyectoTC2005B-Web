@@ -16,6 +16,12 @@ public class Prompt
     public int Likes { get; set; }
 
     public bool IsLikedByUser { get; set; }
+
+    public bool IsSavedByUser { get; set; }
+
+    public string? Description { get; set; }
+
+    public string? AuthorName { get; set; }
 }
 
 public class Tag

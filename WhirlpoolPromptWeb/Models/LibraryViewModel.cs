@@ -9,5 +9,6 @@ public class LibraryViewModel
 
     public string SearchTerm { get; set; }
     public string SelectedCategory { get; set; }
+    public List<string> Categories { get; set; }
     public string SortOrder { get; set; }
 }

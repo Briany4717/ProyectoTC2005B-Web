@@ -40,7 +40,7 @@ public class LoginController : Controller
         if (userSession != null)
         {
             SetUserSession(userSession);
-            return RedirectToAction("Check", "Login");
+            return RedirectToAction("Index", "Library");
         }
 
         // si no se encuentra en la base de datos

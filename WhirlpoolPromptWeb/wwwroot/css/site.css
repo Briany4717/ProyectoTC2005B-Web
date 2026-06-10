@@ -209,6 +209,11 @@ h3 {
   color: #6c6c6c !important;
 }
 
+.prompt-detail-tab .text-muted {
+  font-size: 0.9rem;
+  color: #6c6c6c !important;
+}
+
 .prompts-cont .card h3 {
   color: #413f3f;
 }
@@ -536,6 +541,196 @@ html:has(.login-page) {
 .create-prompt-form ::placeholder {
   color: #9ca3af;
   opacity: 1;
+}
+
+/* ── Shop ── */
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 900px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .shop-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.shop-card {
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #e8e8e8;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.shop-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.shop-card-img-wrap {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+
+.shop-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.shop-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #252525;
+  margin-bottom: 0.4rem;
+}
+
+.shop-card-desc {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: gray !important;
+}
+
+/* –– Modal styles overwritten ––*/
+
+.modal-dialog {
+  max-width: 50dvw !important;
+}
+
+.modal-body {
+  padding: 0rem;
+  height: 40lvh;
+}
+
+.modal-content {
+  overflow: hidden;
+}
+
+.modal-content .text-muted {
+  color: gray !important;
+}
+
+.shop-coins-badge {
+  position: absolute;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: var(--bs-primary-color);
+  padding: 0.4rem 0.9rem;
+  border-radius: 0 0 1rem 0;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--bs-primary-foreground);
+  box-shadow: 0 0 25px black;
+}
+
+.shop-coins-badge img {
+  height: 18px;
+  width: 18px;
+}
+
+.shop-img-player-wrap {
+  position: relative;
+  max-width: 50%;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.shop-offcanvas-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.shop-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  padding: 0.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  backdrop-filter: blur(2px);
+}
+
+.shop-play-btn:hover {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.shop-play-btn .material-symbols-rounded {
+  font-size: 3rem;
+  font-variation-settings: "FILL" 1;
+}
+
+.shop-transaction-icon {
+  display: block;
+  font-size: 4rem;
+}
+
+/* ── Prompt Detail ── */
+
+.prompt-detail-back {
+  color: #6c6c6c;
+  font-size: 0.95rem;
+  transition: color 0.15s;
+}
+
+.prompt-detail-back:hover {
+  color: #252525;
+}
+
+.prompt-detail-card {
+  border-radius: 16px;
+}
+
+.prompt-detail-desc {
+  font-size: 0.95rem;
+  border-left: 3px solid var(--bs-secondary-color);
+  padding-left: 0.75rem;
+}
+
+.prompt-detail-content {
+  font-size: 1rem;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  color: #252525;
+}
+
+/* ── Card title link ── */
+.prompt-card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.prompt-card-link:hover h3 {
+  color: var(--bs-secondary-color);
+  text-decoration: underline;
 }
 
 /* ── Shop ── */
