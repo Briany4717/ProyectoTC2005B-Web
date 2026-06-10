@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Crear Prompt";
+    var categories = ViewData["Categories"] as List<WhirlpoolPromptWeb.Models.PromptCategoryConId>
+                     ?? new List<WhirlpoolPromptWeb.Models.PromptCategoryConId>();
 }
 
 <main class="col-8 mx-auto">
@@ -22,10 +24,10 @@
             <label asp-for="Category" class="form-label">Categoría</label>
             <select asp-for="Category" class="form-select">
                 <option value="">Seleccione una categoría</option>
-                <option value="Código">Código</option>
-                <option value="Educación">Educación</option>
-                <option value="Diseño">Diseño</option>
-                <option value="Marketing">Marketing</option>
+                @foreach (var cat in categories)
+                {
+                    <option value="@cat.Nombre">@cat.Nombre</option>
+                }
             </select>
             <span asp-validation-for="Category" class="text-danger"></span>
         </div>

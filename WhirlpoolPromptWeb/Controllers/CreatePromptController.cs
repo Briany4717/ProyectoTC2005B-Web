@@ -17,23 +17,6 @@ public class CreatePromptController : Controller
         _createPromptService = createPromptService;
     }
 
-    private Tag GetTagFromCategory(string category)
-    {
-        switch (category)
-        {
-            case "Código":
-                return new Tag { Label = "Código", Icon = "code" };
-            case "Educación":
-                return new Tag { Label = "Educación", Icon = "school" };
-            case "Diseño":
-                return new Tag { Label = "Diseño", Icon = "brush" };
-            case "Marketing":
-                return new Tag { Label = "Marketing", Icon = "campaign" };
-            default:
-                return null;
-        }
-    }
-
     private void SetNavbarData()
     {
         ViewData["Coins"] = HttpContext.Session.GetInt32("Coins") ?? 0;
@@ -41,9 +24,10 @@ public class CreatePromptController : Controller
     }
 
     [HttpGet]
-    public IActionResult CreatePrompt()
+    public async Task<IActionResult> CreatePrompt()
     {
         SetNavbarData();
+        ViewData["Categories"] = await _createPromptService.GetCategoriesConId();
         return View();
     }
 
@@ -52,10 +36,13 @@ public class CreatePromptController : Controller
     {
         SetNavbarData();
 
+        var categories = await _createPromptService.GetCategoriesConId();
+        ViewData["Categories"] = categories; 
+
         if (!ModelState.IsValid) return View(model);
 
-        var tag = GetTagFromCategory(model.Category);
-        if (tag == null)
+        var categoria = categories.FirstOrDefault(c => c.Nombre == model.Category);
+        if (categoria == null)
         {
             ModelState.AddModelError(nameof(model.Category), "La categoría seleccionada no es válida.");
             return View(model);
@@ -63,19 +50,10 @@ public class CreatePromptController : Controller
 
         int authorId = HttpContext.Session.GetInt32("UserId") ?? 0;
 
-        int idCategoria = model.Category switch
-        {
-            "Código"     => 1,
-            "Educación"  => 2,
-            "Diseño"     => 3,
-            "Marketing"  => 4,
-            _            => 0
-        };
-
         var resultado = await _createPromptService.InsertarPrompt(
             model.Title.Trim(),
             model.Content.Trim(),
-            idCategoria,
+            categoria.IdCategoria,
             authorId
         );
 
