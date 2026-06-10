@@ -45,6 +45,14 @@ builder.Services.AddHttpClient<IShopService, ShopService>()
                 HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
         });
 
+builder.Services.AddHttpClient<ILeaderboardService, LeaderboardService>()
+    .ConfigurePrimaryHttpMessageHandler(() =>
+        new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        });
+
 builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 {
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
