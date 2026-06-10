@@ -1,8 +1,3 @@
-@{
-    Layout = "_Layout";
-    ViewData["Title"] = "Entretenimiento - Juego Unity";
-}
-
 <div class="game-wrapper">
     <div class="game-container">
         <h2 class="game-header-title">Zona de Entretenimiento</h2>
@@ -18,8 +13,7 @@
         </div>
 
         <div id="unity-footer">
-            <div class="unity-title">
-            </div>
+            <div class="unity-title"></div>
             <button id="unity-fullscreen-button" class="btn-fullscreen">
                 <span class="material-symbols-rounded">fullscreen</span>
                 <span>Pantalla Completa</span>
@@ -40,6 +34,7 @@
             companyName: "DefaultCompany",
             productName: "Whirlpool Game",
             productVersion: "1.0",
+            devicePixelRatio: 1
         };
 
         var container = document.querySelector("#unity-container");
@@ -62,18 +57,7 @@
                 };
             }).catch((message) => {
                 console.error("Unity Load Error:", message);
-                var loadingText = document.querySelector(".unity-loading-text");
-                if (loadingText) {
-                    loadingText.innerHTML = "Esperando que se carguen los archivos de Unity en wwwroot/Unity/Build...";
-                }
             });
-        };
-        script.onerror = () => {
-            console.warn("Loader script failed to load.");
-            var loadingText = document.querySelector(".unity-loading-text");
-            if (loadingText) {
-                loadingText.innerHTML = "Por favor, copia los archivos compilados de tu juego de Unity (Build.loader.js, Build.framework.js, Build.data, Build.wasm) dentro de la carpeta: <br/><code style='color: #4a919e; word-break: break-all;'>wwwroot/Unity/Build</code>";
-            }
         };
         document.body.appendChild(script);
     });
