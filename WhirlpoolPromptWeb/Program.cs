@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.StaticFiles;
 using WhirlpoolPromptWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -76,6 +77,15 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.UseSession();
+
+var provider = new FileExtensionContentTypeProvider();
+provider.Mappings[".data"] = "application/octet-stream";
+provider.Mappings[".wasm"] = "application/wasm";
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = provider
+});
 
 app.MapStaticAssets();
 
