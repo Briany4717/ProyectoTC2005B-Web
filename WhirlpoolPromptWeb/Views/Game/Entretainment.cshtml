@@ -1,0 +1,228 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Entretenimiento - Juego Unity";
+}
+
+<div class="game-wrapper">
+    <div class="game-container">
+        <h2 class="game-header-title">Zona de Entretenimiento</h2>
+        <p class="game-subtitle">Disfruta de nuestro juego exclusivo de Whirlpool en WebGL</p>
+        
+        <div id="unity-container">
+            <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+            <div id="unity-loading-bar">
+                <div class="unity-loading-text">Cargando juego...</div>
+                <div id="unity-progress-bar-empty">
+                    <div id="unity-progress-bar-full"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="unity-footer">
+            <div class="unity-title">
+                <span class="material-symbols-rounded">sports_esports</span>
+                <span>Whirlpool WebGL Challenge</span>
+            </div>
+            <button id="unity-fullscreen-button" class="btn-fullscreen">
+                <span class="material-symbols-rounded">fullscreen</span>
+                <span>Pantalla Completa</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .game-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 75vh;
+        width: 100%;
+        padding: 20px 0;
+    }
+
+    .game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 1000px;
+        background: radial-gradient(circle, #2c3e50, #1a252f);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        color: #fff;
+    }
+
+    .game-header-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: #fff;
+        text-align: center;
+    }
+
+    .game-subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 1rem;
+        color: #b3c1cd;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    #unity-container {
+        position: relative;
+        width: 960px;
+        height: 600px;
+        max-width: 100%;
+        background: #000;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    #unity-canvas {
+        width: 100%;
+        height: 100%;
+        background: #111;
+        display: block;
+    }
+
+    #unity-loading-bar {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+        text-align: center;
+        width: 320px;
+        background: rgba(0, 0, 0, 0.75);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .unity-loading-text {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #fff;
+        margin-bottom: 12px;
+    }
+
+    #unity-progress-bar-empty {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    #unity-progress-bar-full {
+        width: 0%;
+        height: 100%;
+        background: #4a919e;
+        border-radius: 4px;
+        transition: width 0.1s ease;
+    }
+
+    #unity-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 960px;
+        margin-top: 20px;
+        padding: 12px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .unity-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-fullscreen {
+        background-color: #4a919e;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Inter', sans-serif;
+        transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn-fullscreen:hover {
+        background-color: #166f6f;
+        transform: translateY(-1px);
+    }
+
+    .btn-fullscreen:active {
+        transform: translateY(1px);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var buildUrl = "/Unity/Build";
+        var loaderUrl = buildUrl + "/Build.loader.js";
+        var config = {
+            dataUrl: buildUrl + "/Build.data",
+            frameworkUrl: buildUrl + "/Build.framework.js",
+            codeUrl: buildUrl + "/Build.wasm",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "DefaultCompany",
+            productName: "Whirlpool Game",
+            productVersion: "1.0",
+        };
+
+        var container = document.querySelector("#unity-container");
+        var canvas = document.querySelector("#unity-canvas");
+        var loadingBar = document.querySelector("#unity-loading-bar");
+        var progressBarFull = document.querySelector("#unity-progress-bar-full");
+        var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+
+        loadingBar.style.display = "block";
+
+        var script = document.createElement("script");
+        script.src = loaderUrl;
+        script.onload = () => {
+            createUnityInstance(canvas, config, (progress) => {
+                progressBarFull.style.width = (100 * progress) + "%";
+            }).then((unityInstance) => {
+                loadingBar.style.display = "none";
+                fullscreenButton.onclick = () => {
+                    unityInstance.SetFullscreen(1);
+                };
+            }).catch((message) => {
+                console.error("Unity Load Error:", message);
+                var loadingText = document.querySelector(".unity-loading-text");
+                if (loadingText) {
+                    loadingText.innerHTML = "Esperando que se carguen los archivos de Unity en wwwroot/Unity/Build...";
+                }
+            });
+        };
+        script.onerror = () => {
+            console.warn("Loader script failed to load. This is expected if Unity Build files have not been uploaded to wwwroot/Unity/Build yet.");
+            var loadingText = document.querySelector(".unity-loading-text");
+            if (loadingText) {
+                loadingText.innerHTML = "Por favor, copia los archivos compilados de tu juego de Unity (Build.loader.js, Build.framework.js, Build.data, Build.wasm) dentro de la carpeta: <br/><code style='color: #4a919e; word-break: break-all;'>wwwroot/Unity/Build</code>";
+            }
+        };
+        document.body.appendChild(script);
+    });
+</script>
