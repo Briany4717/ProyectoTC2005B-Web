@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using WhirlpoolPromptWeb.Models;
 
@@ -78,6 +79,76 @@ public class ProfileService : IProfileService
         {
             System.Diagnostics.Debug.WriteLine($"ToggleLike error: {ex.Message}");
             return null;
+        }
+    }
+
+    public async Task<Prompt?> GetPromptDetailAsync(int promptId, int userId, string currentUserName)
+    {
+        // Check saved first — gives us author info + isSaved = true
+        var saved = await GetPromptsGuardados(userId);
+        var s = saved.FirstOrDefault(x => x.IdPromptCreado == promptId);
+        if (s != null)
+        {
+            return new Prompt
+            {
+                Id = s.IdPromptCreado,
+                Title = s.Titulo,
+                Content = s.Contenido,
+                Description = s.Descripcion,
+                date = s.FechaPublicacion,
+                Tag = new Tag { Label = s.CategoriaLabel, Icon = s.CategoriaIcono },
+                Likes = s.LikesCount,
+                Comments = new int[s.CommentsCount],
+                IsLikedByUser = s.IsLikedByUser > 0,
+                IsSavedByUser = true,
+                AuthorId = s.AutorId,
+                AuthorName = $"{s.AutorNombre} {s.AutorApellido}".Trim()
+            };
+        }
+
+        // Check created — author is the current user, isSaved = false
+        var created = await GetPromptsCreados(userId);
+        var c = created.FirstOrDefault(x => x.IdPromptCreado == promptId);
+        if (c != null)
+        {
+            return new Prompt
+            {
+                Id = c.IdPromptCreado,
+                Title = c.Titulo,
+                Content = c.Contenido,
+                Description = c.Descripcion,
+                date = c.FechaPublicacion,
+                Tag = new Tag { Label = c.CategoriaLabel, Icon = c.CategoriaIcono },
+                Likes = c.LikesCount,
+                Comments = new int[c.CommentsCount],
+                IsLikedByUser = c.IsLikedByUser > 0,
+                IsSavedByUser = false,
+                AuthorId = userId,
+                AuthorName = currentUserName
+            };
+        }
+
+        return null;
+    }
+
+    public async Task ToggleSave(int promptId, int userId, bool currentlySaved)
+    {
+        try
+        {
+            if (currentlySaved)
+            {
+                await _httpClient.DeleteAsync($"{_baseUrl}/savedPrompts/{userId}/{promptId}");
+            }
+            else
+            {
+                var body = JsonSerializer.Serialize(new { id_usuario = userId, id_prompt = promptId });
+                var content = new StringContent(body, Encoding.UTF8, "application/json");
+                await _httpClient.PostAsync($"{_baseUrl}/savePrompt", content);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"ToggleSave error: {ex.Message}");
         }
     }
 }

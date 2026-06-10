@@ -1,0 +1,92 @@
+@model PromptDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Prompt.Title;
+    var p = Model.Prompt;
+}
+
+<main class="col-7 mx-auto">
+
+    @if (!string.IsNullOrEmpty(Model.ReturnUrl))
+    {
+        <a href="@Model.ReturnUrl" class="prompt-detail-back d-inline-flex align-items-center gap-1 mb-4 text-decoration-none text-muted">
+            <span class="material-symbols-rounded" style="font-size:20px;">arrow_back</span>
+            Volver
+        </a>
+    }
+
+    <div class="card prompt-detail-card p-5">
+
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            @if (p.Tag != null)
+            {
+                <span class="d-flex align-items-center gap-1 text-muted" style="font-size:0.9rem;">
+                    <span class="material-symbols-rounded" style="font-size:16px;">@p.Tag.Icon</span>
+                    @p.Tag.Label
+                </span>
+            }
+            else
+            {
+                <span></span>
+            }
+            <span class="text-muted" style="font-size:0.85rem;">
+                @p.date.ToString("d 'de' MMMM 'de' yyyy", System.Globalization.CultureInfo.CreateSpecificCulture("es-ES"))
+            </span>
+        </div>
+
+        <h1 class="mb-1">@p.Title</h1>
+
+        @if (!string.IsNullOrWhiteSpace(p.AuthorName))
+        {
+            <p class="text-muted mb-3" style="font-size:0.9rem;">
+                <span class="material-symbols-rounded align-middle" style="font-size:16px;">person</span>
+                @p.AuthorName
+            </p>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(p.Description))
+        {
+            <p class="prompt-detail-desc fst-italic text-muted mb-4">@p.Description</p>
+        }
+
+        <hr class="my-3" />
+
+        <p class="prompt-detail-content mb-4">@p.Content</p>
+
+        <hr class="my-3" />
+
+        <div class="d-flex align-items-center gap-4 mt-2">
+
+            <a href="/Library/Comments?promptId=@p.Id"
+               class="d-flex align-items-center gap-1 text-muted text-decoration-none">
+                <span class="material-symbols-rounded" style="font-size:20px;">chat_bubble</span>
+                @(p.Comments?.Length ?? 0)
+            </a>
+
+            <form method="post" asp-controller="Prompt" asp-action="ToggleLike" class="d-flex align-items-center">
+                <input type="hidden" name="promptId" value="@p.Id" />
+                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                <button type="submit"
+                        class="d-flex align-items-center gap-1 border-0 bg-transparent p-0"
+                        style="color:@(p.IsLikedByUser ? "#25818c" : "inherit"); cursor:pointer; font-weight:@(p.IsLikedByUser ? "bold" : "normal");">
+                    <span class="material-symbols-rounded"
+                          style="font-size:20px; font-variation-settings:'FILL' @(p.IsLikedByUser ? 1 : 0);">thumb_up</span>
+                    @p.Likes
+                </button>
+            </form>
+
+            <form method="post" asp-controller="Prompt" asp-action="ToggleSave" class="d-flex align-items-center">
+                <input type="hidden" name="promptId" value="@p.Id" />
+                <input type="hidden" name="isSaved" value="@p.IsSavedByUser.ToString().ToLower()" />
+                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                <button type="submit"
+                        class="d-flex align-items-center gap-1 border-0 bg-transparent p-0"
+                        style="color:@(p.IsSavedByUser ? "#25818c" : "inherit"); cursor:pointer; font-weight:@(p.IsSavedByUser ? "bold" : "normal");">
+                    <span class="material-symbols-rounded"
+                          style="font-size:25px; font-variation-settings:'FILL' @(p.IsSavedByUser ? 1 : 0);">bookmark</span>
+                </button>
+            </form>
+
+        </div>
+    </div>
+</main>

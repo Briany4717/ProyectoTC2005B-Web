@@ -58,7 +58,12 @@
                                     @prompt.date.ToString("d 'de' MMMM", System.Globalization.CultureInfo.CreateSpecificCulture("es-ES"))
                                 </div>
                                 <div class="d-flex justify-content-between mb-3">
-                                    <h3 class="m-0">@prompt.Title</h3>
+                                    <a asp-controller="Prompt" asp-action="Detail"
+                                       asp-route-promptId="@prompt.Id"
+                                       asp-route-returnUrl="@(ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString)"
+                                       class="prompt-card-link">
+                                        <h3 class="m-0">@prompt.Title</h3>
+                                    </a>
                                 </div>
                                 <p class="mb-3">@prompt.Content</p>
 
