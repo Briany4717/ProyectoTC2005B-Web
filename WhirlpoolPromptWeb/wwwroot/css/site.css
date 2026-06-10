@@ -209,6 +209,11 @@ h3 {
   color: #6c6c6c !important;
 }
 
+.prompt-detail-tab .text-muted {
+  font-size: 0.9rem;
+  color: #6c6c6c !important;
+}
+
 .prompts-cont .card h3 {
   color: #413f3f;
 }
@@ -680,7 +685,7 @@ html:has(.login-page) {
 
 .shop-play-btn .material-symbols-rounded {
   font-size: 3rem;
-  font-variation-settings: 'FILL' 1;
+  font-variation-settings: "FILL" 1;
 }
 
 .shop-transaction-icon {
