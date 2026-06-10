@@ -48,26 +48,29 @@ public class ShopService : IShopService
                 $"{_baseUrl}/usuarios/{userId}/canciones/{productId}/comprar", null);
 
             var json = await response.Content.ReadAsStringAsync();
+            var data = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+            var resultado = data?.GetValueOrDefault("resultado") ?? "";
 
-            if (!response.IsSuccessStatusCode)
+            return resultado switch
             {
-                return new PurchaseResult
+                "Compra exitosa" => new PurchaseResult
+                {
+                    Success = true,
+                    Message = "¡Compra exitosa!",
+                    NewCoinBalance = await GetUpdatedCoinBalance(userId, currentCoins)
+                },
+                "Saldo Insuficiente" => new PurchaseResult
                 {
                     Success = false,
-                    Message = "No fue posible completar la compra. Intenta de nuevo.",
+                    Message = "Saldo insuficiente para realizar esta compra.",
                     NewCoinBalance = currentCoins
-                };
-            }
-
-            var products = await GetProductsAsync(userId);
-            var product = products.FirstOrDefault(p => p.Id == productId);
-            int newBalance = currentCoins - (product?.Cost ?? 0);
-
-            return new PurchaseResult
-            {
-                Success = true,
-                Message = $"¡Compra exitosa! Ahora tienes acceso a \"{product?.Name ?? "producto"}\".",
-                NewCoinBalance = newBalance
+                },
+                _ => new PurchaseResult
+                {
+                    Success = false,
+                    Message = resultado,
+                    NewCoinBalance = currentCoins
+                }
             };
         }
         catch (Exception ex)
@@ -79,6 +82,23 @@ public class ShopService : IShopService
                 Message = "Error de conexión. Intenta de nuevo.",
                 NewCoinBalance = currentCoins
             };
+        }
+    }
+
+    private async Task<int> GetUpdatedCoinBalance(int userId, int fallback)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"{_baseUrl}/usuarios/{userId}/perfil");
+            if (!response.IsSuccessStatusCode) return fallback;
+
+            var json = await response.Content.ReadAsStringAsync();
+            var perfil = JsonSerializer.Deserialize<PerfilUsuarioResponse>(json);
+            return perfil?.Coins ?? fallback;
+        }
+        catch
+        {
+            return fallback;
         }
     }
 }
