@@ -8,7 +8,7 @@ using System.Linq;
 public class LibraryServices : ILibraryServices
 {
     private readonly HttpClient _httpClient;
-    private readonly string _baseUrl = "https://127.0.0.1:8999";
+    private readonly string _baseUrl = "https://10.14.255.43:6747";
 
     public LibraryServices(HttpClient httpClient)
     {
