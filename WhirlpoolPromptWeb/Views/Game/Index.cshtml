@@ -9,7 +9,7 @@
         <p class="game-subtitle">Disfruta de nuestro juego exclusivo de Whirlpool en WebGL</p>
         
         <div id="unity-container">
-            <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+            <canvas id="unity-canvas" width="960" height="520" tabindex="-1"></canvas>
             <div id="unity-loading-bar">
                 <div class="unity-loading-text">Cargando juego...</div>
                 <div id="unity-progress-bar-empty">
@@ -75,8 +75,8 @@
     #unity-container {
         position: relative;
         width: 960px;
-        height: 600px;
         max-width: 100%;
+        aspect-ratio: 960 / 520;
         background: #000;
         border-radius: 12px;
         overflow: hidden;
@@ -179,11 +179,11 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var buildUrl = "/Unity/Build";
-        var loaderUrl = buildUrl + "/Build.loader.js";
+        var loaderUrl = buildUrl + "/Downloads.loader.js";
         var config = {
-            dataUrl: buildUrl + "/Build.data",
-            frameworkUrl: buildUrl + "/Build.framework.js",
-            codeUrl: buildUrl + "/Build.wasm",
+            dataUrl: buildUrl + "/Downloads.data",
+            frameworkUrl: buildUrl + "/Downloads.framework.js",
+            codeUrl: buildUrl + "/Downloads.wasm",
             streamingAssetsUrl: "StreamingAssets",
             companyName: "DefaultCompany",
             productName: "Whirlpool Game",
@@ -210,8 +210,6 @@
                 };
             }).catch((message) => {
                 console.error("Unity Load Error:", message);
-                // Si falla por no encontrar el loader o archivos porque aún no se han subido,
-                // mostramos una advertencia amigable en consola y en el loading container.
                 var loadingText = document.querySelector(".unity-loading-text");
                 if (loadingText) {
                     loadingText.innerHTML = "Esperando que se carguen los archivos de Unity en wwwroot/Unity/Build...";
@@ -219,7 +217,7 @@
             });
         };
         script.onerror = () => {
-            console.warn("Loader script failed to load. This is expected if Unity Build files have not been uploaded to wwwroot/Unity/Build yet.");
+            console.warn("Loader script failed to load.");
             var loadingText = document.querySelector(".unity-loading-text");
             if (loadingText) {
                 loadingText.innerHTML = "Por favor, copia los archivos compilados de tu juego de Unity (Build.loader.js, Build.framework.js, Build.data, Build.wasm) dentro de la carpeta: <br/><code style='color: #4a919e; word-break: break-all;'>wwwroot/Unity/Build</code>";

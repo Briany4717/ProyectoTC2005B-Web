@@ -210,8 +210,6 @@
                 };
             }).catch((message) => {
                 console.error("Unity Load Error:", message);
-                // Si falla por no encontrar el loader o archivos porque aún no se han subido,
-                // mostramos una advertencia amigable en consola y en el loading container.
                 var loadingText = document.querySelector(".unity-loading-text");
                 if (loadingText) {
                     loadingText.innerHTML = "Esperando que se carguen los archivos de Unity en wwwroot/Unity/Build...";
