@@ -5,4 +5,5 @@ namespace WhirlpoolPromptWeb.Services;
 public interface ICreatePromptService
 {
     Task<InsertarPromptResponse?> InsertarPrompt(string titulo, string contenido, int idCategoria, int idUsuario);
+    Task<List<PromptCategoryConId>> GetCategoriesConId();
 }

@@ -41,4 +41,22 @@ public class CreatePromptService : ICreatePromptService
             return null;
         }
     }
+    public async Task<List<PromptCategoryConId>> GetCategoriesConId()
+{
+    try
+    {
+        var response = await _httpClient.GetAsync($"{_baseUrl}/PromptCategoriesConId");
+        if (!response.IsSuccessStatusCode) return new List<PromptCategoryConId>();
+
+        var jsonResponse = await response.Content.ReadAsStringAsync();
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        return JsonSerializer.Deserialize<List<PromptCategoryConId>>(jsonResponse, options)
+               ?? new List<PromptCategoryConId>();
+    }
+    catch (Exception ex)
+    {
+        System.Diagnostics.Debug.WriteLine($"GetCategoriesConId error: {ex.Message}");
+        return new List<PromptCategoryConId>();
+    }
+}
 }
