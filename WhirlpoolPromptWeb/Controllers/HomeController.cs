@@ -83,7 +83,7 @@ public class HomeController : Controller
         const int pageSize = 5;
 
         var apiEntries = await _leaderboardService.GetLeaderboard(league);
-        var allEntries = apiEntries.Select((e, i) => new LeaderboardEntry
+        var allEntries = apiEntries.OrderByDescending(e => e.MonedasUsuario).Select((e, i) => new LeaderboardEntry
         {
             Rank          = i + 1,
             Name          = e.NombreUsuario,
